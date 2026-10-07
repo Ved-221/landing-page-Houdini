@@ -1,0 +1,2631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Artimas — The Celestial Riddle of Dharma</title>
+  <meta name="description" content="Artimas Riddle Experience: Unravel the cosmic yugas, decipher the sacred riddles, and reveal the eternal truth of Dharma." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☸</text></svg>">
+
+  <!-- Google Fonts: Artimas Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Noto+Serif+Devanagari:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Confetti script from cdn.jsdelivr.net for celestial victory -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    /* ==========================================================================
+       THEME VARIABLES (Extracted & Reused from Artimas reference)
+       ========================================================================== */
+    :root {
+      /* Safe area insets */
+      --sat: env(safe-area-inset-top, 0px);
+      --sab: env(safe-area-inset-bottom, 0px);
+      --sal: env(safe-area-inset-left, 0px);
+      --sar: env(safe-area-inset-right, 0px);
+
+      /* Core Artimas Palette */
+      --color-bg: #080a0c;
+      --color-bg-card: rgba(18, 14, 12, 0.82);
+      --color-bg-card-hover: rgba(26, 19, 15, 0.88);
+      --color-bg-inner: rgba(10, 8, 7, 0.75);
+
+      --panel-parchment: #b8945a;
+      --panel-highlight: #c9a45c;
+      --border-bronze: #76552f;
+      --border-bronze-glow: rgba(201, 164, 92, 0.3);
+      --heading-ivory: #e8d8b0;
+      --text-parchment: #c5b18a;
+      --text-muted: #8d7a5b;
+
+      --btn-bronze: #3a2415;
+      --btn-bronze-hover: #4e321e;
+      --btn-border-gold: #a9823d;
+      --active-glow-gold: rgba(201, 164, 92, 0.38);
+
+      --gold: #c9a45c;
+      --gold-light: #f4e8cb;
+      --gold-deep: #96702e;
+      --bronze-dark: #3a2415;
+      --bronze-border: #76552f;
+
+      /* Accents */
+      --accent-saffron: #e07a2c;
+      --accent-crimson: #a82a2a;
+      --accent-emerald: #3ca370;
+
+      /* Typography */
+      --font-title: 'Cinzel Decorative', Georgia, serif;
+      --font-cinzel: 'Cinzel', Georgia, serif;
+      --font-body: 'Cormorant Garamond', Georgia, serif;
+      --font-devanagari: 'Noto Serif Devanagari', 'Tiro Devanagari Hindi', serif;
+      --font-ui: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+
+      /* Radii */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 14px;
+      --radius-pill: 9999px;
+
+      /* Shadows & Glows */
+      --shadow-card: 0 16px 40px rgba(0, 0, 0, 0.85), 0 0 35px rgba(201, 164, 92, 0.1);
+      --shadow-glow: 0 0 25px rgba(201, 164, 92, 0.4);
+      --shadow-glow-strong: 0 0 35px rgba(201, 164, 92, 0.7);
+    }
+
+    /* Base Reset & Typography */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--color-bg);
+      color: var(--text-parchment);
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      position: relative;
+      padding-top: max(16px, var(--sat));
+      padding-bottom: max(32px, var(--sab));
+      padding-left: max(16px, var(--sal));
+      padding-right: max(16px, var(--sar));
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Selection & Focus */
+    ::selection {
+      background: var(--gold);
+      color: var(--bronze-dark);
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--panel-highlight);
+      outline-offset: 3px;
+    }
+
+    /* Parallax Cosmic Background Canvas */
+    #stars-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Cosmic Nebula Glow & Astrolabe Layer */
+    .cosmic-nebula {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+      background:
+        radial-gradient(circle at 50% 18%, rgba(201, 164, 92, 0.12) 0%, transparent 55%),
+        radial-gradient(circle at 82% 80%, rgba(224, 122, 44, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 18% 70%, rgba(118, 85, 47, 0.14) 0%, transparent 55%),
+        radial-gradient(circle at 50% 50%, rgba(8, 10, 12, 0.6) 0%, rgba(8, 10, 12, 0.95) 100%);
+    }
+
+    .astrolabe-mandala {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: min(85vw, 650px);
+      height: min(85vw, 650px);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      opacity: 0.07;
+      z-index: 1;
+      animation: rotateAstrolabe 90s linear infinite;
+      transform-origin: center center;
+    }
+
+    @keyframes rotateAstrolabe {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to   { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* App Shell */
+    .app-shell {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    /* Top HUD Navigation Bar */
+    .top-hud {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 8px 0 20px 0;
+      position: sticky;
+      top: max(12px, var(--sat));
+      z-index: 50;
+    }
+
+    /* Audio Mute/Unmute Toggle (Top-Left) */
+    .audio-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(28, 20, 16, 0.85);
+      border: 1px solid var(--border-bronze);
+      color: var(--heading-ivory);
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-cinzel);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    }
+
+    .audio-toggle-btn:hover {
+      border-color: var(--panel-highlight);
+      background: rgba(58, 36, 21, 0.9);
+      box-shadow: 0 0 16px var(--active-glow-gold);
+      transform: translateY(-1px);
+    }
+
+    .audio-toggle-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    .audio-wave-anim {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      height: 12px;
+    }
+
+    .audio-wave-bar {
+      width: 2px;
+      height: 100%;
+      background: var(--gold);
+      border-radius: 1px;
+      animation: soundBar 1s ease-in-out infinite alternate;
+    }
+    .audio-wave-bar:nth-child(2) { animation-delay: 0.2s; height: 60%; }
+    .audio-wave-bar:nth-child(3) { animation-delay: 0.4s; height: 80%; }
+
+    @keyframes soundBar {
+      0%   { height: 30%; }
+      100% { height: 100%; }
+    }
+
+    .audio-paused .audio-wave-bar {
+      animation: none;
+      height: 20%;
+      opacity: 0.4;
+    }
+
+    /* Top-Right Collected Words HUD Slot */
+    .collected-slot-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    .collected-slot-label {
+      font-family: var(--font-cinzel);
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .collected-words-slot {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 140px;
+      height: 48px;
+      padding: 4px 16px;
+      background: rgba(22, 16, 13, 0.92);
+      border: 1px solid var(--border-bronze);
+      border-radius: var(--radius-sm);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(58, 36, 21, 0.5);
+      position: relative;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Ornamental gold corners on slot */
+    .collected-words-slot::before,
+    .collected-words-slot::after {
+      content: '';
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border: 1px solid var(--panel-highlight);
+      pointer-events: none;
+    }
+    .collected-words-slot::before { top: 2px; left: 2px; border-right: none; border-bottom: none; }
+    .collected-words-slot::after  { bottom: 2px; right: 2px; border-left: none; border-top: none; }
+
+    .slot-empty-state {
+      font-family: var(--font-cinzel);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      color: rgba(197, 177, 138, 0.35);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .slot-word-item {
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .collected-words-slot.has-word .slot-empty-state {
+      display: none;
+    }
+
+    .collected-words-slot.has-word .slot-word-item {
+      display: inline-flex;
+    }
+
+    .slot-word-devanagari {
+      font-family: var(--font-devanagari);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--heading-ivory);
+      text-shadow: 0 0 10px rgba(201, 164, 92, 0.7);
+      line-height: 1;
+    }
+
+    .slot-word-roman {
+      font-family: var(--font-cinzel);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      color: var(--panel-highlight);
+      padding-left: 4px;
+      border-left: 1px solid var(--border-bronze);
+    }
+
+    /* Glow pulse animation when word docks in slot */
+    .collected-words-slot.arrival-pulse {
+      animation: slotDockPulse 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes slotDockPulse {
+      0% {
+        border-color: var(--gold-light);
+        box-shadow: 0 0 35px rgba(254, 232, 164, 0.9), inset 0 0 20px rgba(201, 164, 92, 0.6);
+        transform: scale(1.08);
+      }
+      50% {
+        border-color: var(--panel-highlight);
+        box-shadow: 0 0 25px rgba(201, 164, 92, 0.6);
+        transform: scale(1.02);
+      }
+      100% {
+        border-color: var(--border-bronze);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+        transform: scale(1);
+      }
+    }
+
+    /* Hero Section */
+    .hero-header {
+      text-align: center;
+      margin-top: 10px;
+      margin-bottom: 28px;
+      position: relative;
+    }
+
+    .hero-stage-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 18px;
+      background: rgba(58, 36, 21, 0.65);
+      border: 1px solid var(--border-bronze);
+      border-radius: var(--radius-pill);
+      font-family: var(--font-cinzel);
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--panel-highlight);
+      margin-bottom: 14px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .hero-stage-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 8px var(--gold);
+      animation: pulseDot 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 0.6; transform: scale(0.9); }
+      50%      { opacity: 1; transform: scale(1.2); }
+    }
+
+    .hero-title {
+      font-family: var(--font-title);
+      font-size: clamp(26px, 5.2vw, 46px);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      line-height: 1.15;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #f5ecd6 0%, #d4a24c 50%, #9c7330 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 2px 14px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 20px rgba(201, 164, 92, 0.25));
+      margin-bottom: 8px;
+    }
+
+    .hero-tagline {
+      font-family: var(--font-body);
+      font-size: clamp(16px, 2.2vw, 21px);
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--heading-ivory);
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+      max-width: 620px;
+      margin: 0 auto;
+    }
+
+    .ornamental-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin: 16px auto 0;
+      opacity: 0.8;
+      max-width: 320px;
+    }
+
+    .ornamental-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-bronze), transparent);
+    }
+
+    .ornamental-glyph {
+      color: var(--gold);
+      font-size: 13px;
+    }
+
+    /* Counters Bar: Penalties + Attempt Pips */
+    .counters-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 12px 18px;
+      background: rgba(22, 16, 13, 0.85);
+      border: 1px solid var(--border-bronze);
+      border-radius: var(--radius-sm);
+      margin-bottom: 20px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    }
+
+    .penalty-counter-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-cinzel);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: var(--heading-ivory);
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+    }
+
+    .penalty-val-box {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 26px;
+      height: 24px;
+      padding: 0 6px;
+      background: rgba(58, 36, 21, 0.9);
+      border: 1px solid var(--btn-border-gold);
+      border-radius: var(--radius-sm);
+      color: var(--gold-light);
+      font-weight: 700;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    /* Penalty bump animation */
+    .penalty-bump {
+      animation: penaltyBumpAnim 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes penaltyBumpAnim {
+      0%   { transform: scale(1); }
+      30%  { transform: scale(1.35); background: rgba(168, 42, 42, 0.85); border-color: #ff5252; color: #fff; box-shadow: 0 0 16px rgba(255, 82, 82, 0.8); }
+      100% { transform: scale(1); }
+    }
+
+    .attempt-tracker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-cinzel);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      color: var(--text-parchment);
+    }
+
+    .attempt-pips {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .attempt-pip {
+      width: 10px;
+      height: 10px;
+      border: 1px solid var(--btn-border-gold);
+      border-radius: 2px;
+      transform: rotate(45deg);
+      background: transparent;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .attempt-pip.available {
+      background: var(--gold);
+      box-shadow: 0 0 8px rgba(201, 164, 92, 0.75);
+    }
+
+    .attempt-pip.used {
+      background: rgba(58, 36, 21, 0.6);
+      border-color: rgba(118, 85, 47, 0.4);
+      opacity: 0.35;
+      box-shadow: none;
+    }
+
+    /* Main Container & Riddle Cards */
+    .main-content {
+      width: 100%;
+      position: relative;
+    }
+
+    .card-gilded {
+      background: var(--color-bg-card);
+      border: 1px solid var(--border-bronze);
+      border-radius: var(--radius-md);
+      padding: clamp(20px, 4vw, 36px);
+      box-shadow: var(--shadow-card);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 28px;
+      transition: border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    /* Filigree corner brackets on gilded card */
+    .card-gilded::before,
+    .card-gilded::after {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border: 2px solid var(--panel-highlight);
+      pointer-events: none;
+      opacity: 0.8;
+    }
+    .card-gilded::before { top: 6px; left: 6px; border-right: none; border-bottom: none; }
+    .card-gilded::after  { bottom: 6px; right: 6px; border-left: none; border-top: none; }
+
+    .card-header-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .card-sanskrit-tag {
+      font-family: var(--font-cinzel);
+      font-size: 11.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--panel-highlight);
+    }
+
+    .card-status-badge {
+      font-family: var(--font-cinzel);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(58, 36, 21, 0.7);
+      border: 1px solid var(--border-bronze);
+      color: var(--heading-ivory);
+    }
+
+    .riddle-question-wrapper {
+      margin-bottom: 28px;
+      position: relative;
+    }
+
+    .riddle-text {
+      font-family: var(--font-body);
+      font-size: clamp(20px, 2.8vw, 26px);
+      font-style: italic;
+      color: var(--heading-ivory);
+      line-height: 1.5;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+    }
+
+    .riddle-text::before {
+      content: '“';
+      font-family: var(--font-title);
+      font-size: 1.4em;
+      color: var(--gold);
+      margin-right: 4px;
+      line-height: 0;
+      vertical-align: -0.1em;
+    }
+
+    .riddle-text::after {
+      content: '”';
+      font-family: var(--font-title);
+      font-size: 1.4em;
+      color: var(--gold);
+      margin-left: 4px;
+      line-height: 0;
+      vertical-align: -0.1em;
+    }
+
+    /* Form Controls */
+    .answer-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+    }
+
+    @media (max-width: 540px) {
+      .input-row {
+        flex-direction: column;
+      }
+    }
+
+    .text-input-sacred {
+      flex: 1;
+      background: rgba(12, 10, 9, 0.85);
+      border: 1px solid var(--border-bronze);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      color: var(--heading-ivory);
+      font-family: var(--font-ui);
+      font-size: 16px;
+      letter-spacing: 0.04em;
+      transition: all 0.25s ease;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.7);
+    }
+
+    .text-input-sacred::placeholder {
+      color: rgba(197, 177, 138, 0.35);
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: 17px;
+    }
+
+    .text-input-sacred:focus {
+      outline: none;
+      border-color: var(--panel-highlight);
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.7), 0 0 16px var(--active-glow-gold);
+    }
+
+    .text-input-sacred:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-sacred {
+      background: var(--btn-bronze);
+      border: 1px solid var(--btn-border-gold);
+      border-radius: var(--radius-sm);
+      color: var(--heading-ivory);
+      font-family: var(--font-cinzel);
+      font-size: 13.5px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 14px 28px;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), inset 0 0 8px rgba(58, 36, 21, 0.5);
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-sacred:hover:not(:disabled) {
+      border-color: var(--panel-highlight);
+      background: var(--btn-bronze-hover);
+      color: #fff;
+      box-shadow: 0 0 20px var(--active-glow-gold);
+      transform: translateY(-2px);
+    }
+
+    .btn-sacred:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn-sacred:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      border-color: var(--border-bronze);
+    }
+
+    /* Feedback Banner & Shakes */
+    .feedback-banner {
+      min-height: 24px;
+      font-family: var(--font-ui);
+      font-size: 13.5px;
+      letter-spacing: 0.02em;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .feedback-banner.error {
+      color: #f78d8d;
+    }
+
+    .feedback-banner.penalty-notice {
+      color: #fbb05b;
+      font-weight: 500;
+    }
+
+    .feedback-banner.success {
+      color: #6ce5a4;
+    }
+
+    .card-shake {
+      animation: shakeAnim 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+
+    @keyframes shakeAnim {
+      10%, 90% { transform: translate3d(-3px, 0, 0); }
+      20%, 80% { transform: translate3d(5px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+      40%, 60% { transform: translate3d(6px, 0, 0); }
+    }
+
+    /* Cooldown Overlay */
+    .cooldown-text {
+      font-family: var(--font-cinzel);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      color: var(--accent-saffron);
+      margin-top: 4px;
+      display: none;
+    }
+
+    /* ==========================================================================
+       SCRATCH CARD SECTION (Stage 1 Reward)
+       ========================================================================== */
+    .scratch-stage-container {
+      margin-top: 32px;
+      padding-top: 28px;
+      border-top: 1px solid rgba(118, 85, 47, 0.45);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      animation: fadeInReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .scratch-stage-container.visible {
+      display: flex;
+    }
+
+    @keyframes fadeInReveal {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .scratch-instruction-title {
+      font-family: var(--font-cinzel);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--heading-ivory);
+      margin-bottom: 6px;
+    }
+
+    .scratch-instruction-desc {
+      font-family: var(--font-body);
+      font-size: 16px;
+      color: var(--text-parchment);
+      margin-bottom: 20px;
+    }
+
+    /* Scratch Card Box */
+    .scratch-card-box {
+      position: relative;
+      width: min(100%, 380px);
+      height: 200px;
+      border-radius: var(--radius-md);
+      border: 2px solid var(--panel-highlight);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(201, 164, 92, 0.25);
+      background: radial-gradient(circle at center, #1e1510 0%, #0d0a08 100%);
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+    }
+
+    /* Hidden Word Underneath */
+    .scratch-hidden-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: radial-gradient(circle at 50% 50%, rgba(58, 36, 21, 0.85) 0%, rgba(14, 11, 9, 0.95) 100%);
+      z-index: 1;
+    }
+
+    .scratch-word-devanagari {
+      font-family: var(--font-devanagari);
+      font-size: clamp(48px, 12vw, 62px);
+      font-weight: 800;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #fff7e0 0%, #e0ba64 50%, #9a6f2b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 18px rgba(201, 164, 92, 0.7));
+    }
+
+    .scratch-word-roman {
+      font-family: var(--font-cinzel);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.28em;
+      color: var(--heading-ivory);
+      margin-top: 4px;
+      text-shadow: 0 0 12px rgba(201, 164, 92, 0.6);
+    }
+
+    .scratch-word-shloka {
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: 13.5px;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    /* Scratch Canvas Overlay */
+    #scratch-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      cursor: crosshair;
+      transition: opacity 0.45s ease;
+      touch-action: none;
+    }
+
+    /* Scratch Card Fallback / Keyboard Button */
+    .scratch-fallback-wrapper {
+      margin-top: 14px;
+    }
+
+    .btn-reveal-fallback {
+      background: transparent;
+      border: 1px dashed var(--border-bronze);
+      color: var(--text-muted);
+      font-family: var(--font-cinzel);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .btn-reveal-fallback:hover {
+      border-color: var(--panel-highlight);
+      color: var(--heading-ivory);
+      background: rgba(58, 36, 21, 0.4);
+    }
+
+    /* Scratch sparkle container for live pointer sparks */
+    .sparkle-particle {
+      position: fixed;
+      pointer-events: none;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #ffe394;
+      box-shadow: 0 0 10px #ffe394;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      animation: particleFade 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes particleFade {
+      0%   { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+      100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.2); }
+    }
+
+    /* Flying word clone during flight animation */
+    .flying-word-clone {
+      position: fixed;
+      z-index: 99999;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transform-origin: center center;
+      filter: drop-shadow(0 0 25px rgba(201, 164, 92, 0.9));
+    }
+
+    .flying-word-clone .scratch-word-devanagari {
+      font-family: var(--font-devanagari);
+      font-size: 42px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff7e0 0%, #e0ba64 50%, #9a6f2b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .flying-word-clone .scratch-word-roman {
+      font-family: var(--font-cinzel);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--heading-ivory);
+    }
+
+    /* ==========================================================================
+       STAGE 2: CLUE UNSEAL REVEAL SECTION
+       ========================================================================== */
+    #stage-2-container {
+      display: none;
+      animation: fadeInReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    #stage-2-container.visible {
+      display: block;
+    }
+
+    .stage-locked-notice {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 16px 20px;
+      background: rgba(22, 16, 13, 0.7);
+      border: 1px dashed var(--border-bronze);
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      font-family: var(--font-cinzel);
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    /* Clue Reveal Ceremonial Panel */
+    .clue-ceremony-container {
+      margin-top: 32px;
+      padding-top: 28px;
+      border-top: 1px solid rgba(118, 85, 47, 0.45);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .clue-ceremony-container.visible {
+      display: flex;
+    }
+
+    /* Seal Unbreaking Animation */
+    .sacred-seal-box {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      border: 2px solid var(--panel-highlight);
+      background: radial-gradient(circle, #3a2415 0%, #150f0c 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 30px rgba(201, 164, 92, 0.4), inset 0 0 15px rgba(201, 164, 92, 0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      margin-bottom: 24px;
+    }
+
+    .sacred-seal-box:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 45px rgba(201, 164, 92, 0.7);
+    }
+
+    .seal-glyph {
+      font-size: 42px;
+      color: var(--gold-light);
+      text-shadow: 0 0 16px var(--gold);
+      animation: rotateSlow 20s linear infinite;
+    }
+
+    @keyframes rotateSlow {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .seal-caption {
+      font-family: var(--font-cinzel);
+      font-size: 9.5px;
+      letter-spacing: 0.16em;
+      color: var(--text-parchment);
+      margin-top: 4px;
+    }
+
+    .seal-breaking {
+      animation: breakSealAnim 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes breakSealAnim {
+      0%   { transform: scale(1); filter: brightness(1); }
+      40%  { transform: scale(1.2); filter: brightness(2) drop-shadow(0 0 40px #ffd978); }
+      100% { transform: scale(0); opacity: 0; }
+    }
+
+    /* Grand Clue Scroll Parchment */
+    .clue-parchment {
+      width: 100%;
+      max-width: 680px;
+      background: radial-gradient(circle at 50% 30%, rgba(38, 26, 18, 0.95) 0%, rgba(14, 11, 9, 0.98) 100%);
+      border: 1px solid var(--panel-highlight);
+      border-radius: var(--radius-md);
+      padding: clamp(24px, 5vw, 40px);
+      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.9), 0 0 40px rgba(201, 164, 92, 0.3);
+      position: relative;
+      overflow: hidden;
+      display: none;
+      animation: unrollScroll 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .clue-parchment.revealed {
+      display: block;
+    }
+
+    @keyframes unrollScroll {
+      0%   { opacity: 0; transform: scaleY(0.4) scaleX(0.85); }
+      100% { opacity: 1; transform: scaleY(1) scaleX(1); }
+    }
+
+    .clue-parchment::before,
+    .clue-parchment::after {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--panel-highlight);
+      pointer-events: none;
+    }
+    .clue-parchment::before { top: 8px; left: 8px; border-right: none; border-bottom: none; }
+    .clue-parchment::after  { bottom: 8px; right: 8px; border-left: none; border-top: none; }
+
+    .clue-parchment-title {
+      font-family: var(--font-cinzel);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--panel-highlight);
+      margin-bottom: 12px;
+    }
+
+    .clue-content-text {
+      font-family: var(--font-body);
+      font-size: clamp(21px, 3.2vw, 29px);
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--heading-ivory);
+      text-shadow: 0 0 20px rgba(201, 164, 92, 0.4);
+      margin-bottom: 22px;
+    }
+
+    .clue-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-copy-clue {
+      background: var(--btn-bronze);
+      border: 1px solid var(--btn-border-gold);
+      color: var(--heading-ivory);
+      font-family: var(--font-cinzel);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      padding: 10px 22px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .btn-copy-clue:hover {
+      border-color: var(--panel-highlight);
+      background: var(--btn-bronze-hover);
+      box-shadow: 0 0 15px var(--active-glow-gold);
+    }
+
+    /* Footer & Reset info */
+    .app-footer {
+      margin-top: auto;
+      padding-top: 40px;
+      text-align: center;
+      font-family: var(--font-cinzel);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+    }
+
+    .footer-reset-link {
+      color: var(--panel-highlight);
+      text-decoration: underline;
+      cursor: pointer;
+      margin-left: 8px;
+      background: none;
+      border: none;
+      font: inherit;
+      letter-spacing: inherit;
+    }
+
+    .footer-reset-link:hover {
+      color: #fff;
+    }
+
+    /* Screen reader only utility */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Prefers Reduced Motion overrides */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001s !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001s !important;
+      }
+      .astrolabe-mandala {
+        animation: none;
+      }
+      #stars-canvas {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Parallax Canvas & Cosmic Dust Layers -->
+  <canvas id="stars-canvas" aria-hidden="true"></canvas>
+  <div class="cosmic-nebula" aria-hidden="true"></div>
+
+  <!-- Cosmic Astrolabe / Kalchakra Emblem SVG (Slow Rotation) -->
+  <svg class="astrolabe-mandala" viewBox="0 0 200 200" aria-hidden="true">
+    <circle cx="100" cy="100" r="94" fill="none" stroke="var(--gold)" stroke-width="0.8" stroke-dasharray="2, 3" />
+    <circle cx="100" cy="100" r="86" fill="none" stroke="var(--panel-highlight)" stroke-width="1.2" />
+    <circle cx="100" cy="100" r="72" fill="none" stroke="var(--border-bronze)" stroke-width="0.7" stroke-dasharray="4, 4" />
+    <circle cx="100" cy="100" r="48" fill="none" stroke="var(--gold)" stroke-width="1" />
+    <circle cx="100" cy="100" r="24" fill="none" stroke="var(--heading-ivory)" stroke-width="0.8" />
+    <!-- 8 Yuga Spokes -->
+    <line x1="100" y1="6" x2="100" y2="194" stroke="var(--border-bronze)" stroke-width="0.8" />
+    <line x1="6" y1="100" x2="194" y2="100" stroke="var(--border-bronze)" stroke-width="0.8" />
+    <line x1="33" y1="33" x2="167" y2="167" stroke="var(--border-bronze)" stroke-width="0.6" stroke-dasharray="2, 2" />
+    <line x1="167" y1="33" x2="33" y2="167" stroke="var(--border-bronze)" stroke-width="0.6" stroke-dasharray="2, 2" />
+    <!-- Center Bindu -->
+    <circle cx="100" cy="100" r="5" fill="var(--gold)" />
+  </svg>
+
+  <!-- Live Announcements for Screen Readers -->
+  <div id="sr-announcements" class="sr-only" aria-live="assertive" role="status"></div>
+
+  <!-- Audio Element with Devotional Background Loop -->
+  <audio id="bg-audio" loop preload="none"></audio>
+
+  <!-- Main App Shell -->
+  <div class="app-shell">
+
+    <!-- Top Navigation HUD -->
+    <header class="top-hud">
+      <!-- Top-Left: Audio Control -->
+      <button id="audio-toggle-btn" class="audio-toggle-btn audio-paused" aria-label="Toggle background chant audio">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+        </svg>
+        <span id="audio-toggle-label">AUDIO: OFF</span>
+        <div class="audio-wave-anim" aria-hidden="true">
+          <div class="audio-wave-bar"></div>
+          <div class="audio-wave-bar"></div>
+          <div class="audio-wave-bar"></div>
+        </div>
+      </button>
+
+      <!-- Top-Right: Collected Words Slot -->
+      <div class="collected-slot-wrapper">
+        <div class="collected-slot-label">॥ संगृहीत शब्दाः ॥ Collected Words</div>
+        <div id="collected-words-slot" class="collected-words-slot" aria-label="Collected Words vault">
+          <div class="slot-empty-state">
+            <span>✦</span>
+            <span>[ EMPTY ]</span>
+            <span>✦</span>
+          </div>
+          <div class="slot-word-item" id="slot-word-display">
+            <span class="slot-word-devanagari">धर्म</span>
+            <span class="slot-word-roman">DHARMA</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Header -->
+    <section class="hero-header" aria-label="Event Header">
+      <div class="hero-stage-badge" id="hero-chamber-badge">
+        <span class="hero-stage-badge-dot"></span>
+        <span id="hero-chamber-text">CHAMBER I: THE SACRED SEED</span>
+      </div>
+      <h1 class="hero-title" id="event-title-display">ARTIMAS — YUGA SANDHYA</h1>
+      <p class="hero-tagline" id="event-tagline-display">Unravel the Celestial Enigma of Dharma</p>
+      <div class="ornamental-divider" aria-hidden="true">
+        <div class="ornamental-line"></div>
+        <div class="ornamental-glyph">❖</div>
+        <div class="ornamental-glyph">✦</div>
+        <div class="ornamental-glyph">❖</div>
+        <div class="ornamental-line"></div>
+      </div>
+    </section>
+
+    <!-- Persistent Counters HUD (Penalties + Attempt Pips) -->
+    <div class="counters-bar" role="region" aria-label="Game counters">
+      <div class="penalty-counter-badge" id="penalty-badge" title="Total accumulated penalties across all chambers">
+        <span>⚔ PENALTIES:</span>
+        <div class="penalty-val-box" id="penalty-count-display">0</div>
+      </div>
+      <div class="attempt-tracker" id="attempt-tracker-box">
+        <span id="attempt-label-display">Attempt 1 of 3</span>
+        <div class="attempt-pips" id="attempt-pips-container" aria-label="3 attempts remaining">
+          <div class="attempt-pip available" id="pip-1"></div>
+          <div class="attempt-pip available" id="pip-2"></div>
+          <div class="attempt-pip available" id="pip-3"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Dynamic Content -->
+    <main class="main-content">
+
+      <!-- ====================================================================
+           STAGE 1: RIDDLE 1 CARD + SCRATCH CARD
+           ==================================================================== -->
+      <article id="stage-1-card" class="card-gilded" aria-label="Riddle 1 Chamber">
+        <div class="card-header-meta">
+          <span class="card-sanskrit-tag">॥ प्रथमः मन्त्रः ॥ ENIGMA I</span>
+          <span class="card-status-badge" id="riddle-1-status">CHAMBER ACTIVE</span>
+        </div>
+
+        <div class="riddle-question-wrapper">
+          <p class="riddle-text" id="riddle-1-text">
+            Loading cosmic riddle...
+          </p>
+        </div>
+
+        <form class="answer-form" id="riddle-1-form" onsubmit="return false;" novalidate>
+          <div class="input-row">
+            <label for="riddle-1-input" class="sr-only">Answer for Riddle 1</label>
+            <input
+              type="text"
+              id="riddle-1-input"
+              class="text-input-sacred"
+              placeholder="Inscribe your answer here..."
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+              required
+            />
+            <button type="submit" id="riddle-1-submit" class="btn-sacred">
+              <span>Decipher</span>
+              <span aria-hidden="true">→</span>
+            </button>
+          </div>
+          <div id="riddle-1-feedback" class="feedback-banner" role="status"></div>
+          <div id="riddle-1-cooldown" class="cooldown-text"></div>
+        </form>
+
+        <!-- Scratch Card Container (Reveals on Riddle 1 Success) -->
+        <div id="scratch-stage-1" class="scratch-stage-container">
+          <h2 class="scratch-instruction-title">॥ दिव्य प्रकटीकरणम् ॥ SACRED REVELATION</h2>
+          <p class="scratch-instruction-desc">Scratch the consecrated foil below to reveal the cosmic glyph.</p>
+
+          <div class="scratch-card-box" id="scratch-box">
+            <!-- Hidden Word Underneath -->
+            <div class="scratch-hidden-content" id="scratch-hidden-content">
+              <div class="scratch-word-devanagari" id="reward-devanagari">धर्म</div>
+              <div class="scratch-word-roman" id="reward-roman">DHARMA</div>
+              <div class="scratch-word-shloka">॥ धार्यते इति धर्मः ॥</div>
+            </div>
+            <!-- Canvas Overlay Foil -->
+            <canvas id="scratch-canvas" width="380" height="200" aria-label="Interactive scratch foil overlay"></canvas>
+          </div>
+
+          <div class="scratch-fallback-wrapper">
+            <button id="scratch-fallback-btn" class="btn-reveal-fallback" type="button">
+              ✦ Reveal Glyph (Accessible Fallback) ✦
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Stage 2 Locked Placeholder Banner (shown before Stage 1 word flies in) -->
+      <div id="stage-2-locked-banner" class="stage-locked-notice">
+        <span>🔒 CHAMBER II IS VEILED • CLAIM THE SACRED SEED OF CHAMBER I FIRST</span>
+      </div>
+
+      <!-- ====================================================================
+           STAGE 2: RIDDLE 2 CARD + CLUE REVELATION
+           ==================================================================== -->
+      <article id="stage-2-container" class="card-gilded" aria-label="Riddle 2 Chamber">
+        <div class="card-header-meta">
+          <span class="card-sanskrit-tag">॥ द्वितीयः मन्त्रः ॥ ENIGMA II</span>
+          <span class="card-status-badge" id="riddle-2-status">CHAMBER UNLOCKED</span>
+        </div>
+
+        <div class="riddle-question-wrapper">
+          <p class="riddle-text" id="riddle-2-text">
+            Loading cosmic riddle...
+          </p>
+        </div>
+
+        <form class="answer-form" id="riddle-2-form" onsubmit="return false;" novalidate>
+          <div class="input-row">
+            <label for="riddle-2-input" class="sr-only">Answer for Riddle 2</label>
+            <input
+              type="text"
+              id="riddle-2-input"
+              class="text-input-sacred"
+              placeholder="Inscribe your answer here..."
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+              required
+            />
+            <button type="submit" id="riddle-2-submit" class="btn-sacred">
+              <span>Decipher</span>
+              <span aria-hidden="true">→</span>
+            </button>
+          </div>
+          <div id="riddle-2-feedback" class="feedback-banner" role="status"></div>
+          <div id="riddle-2-cooldown" class="cooldown-text"></div>
+        </form>
+
+        <!-- Clue Reveal Ceremonial Section (Stage 2 Success) -->
+        <div id="clue-ceremony-section" class="clue-ceremony-container">
+          <!-- Sacred Seal Trigger (when clueRevealStyle is "seal") -->
+          <div id="seal-trigger-box" class="sacred-seal-box" role="button" tabindex="0" aria-label="Unseal the sacred cosmic clue">
+            <div class="seal-glyph" aria-hidden="true">☸</div>
+            <div class="seal-caption">UNSEAL CIPHER</div>
+          </div>
+
+          <!-- Revealed Grand Clue Scroll -->
+          <div id="clue-parchment-scroll" class="clue-parchment" role="region" aria-label="Unlocked Clue parchment">
+            <h3 class="clue-parchment-title">॥ उद्घाटितम् सूत्रम् ॥ CELESTIAL CLUE UNLOCKED</h3>
+            <p class="clue-content-text" id="clue-text-display">
+              Loading cosmic clue...
+            </p>
+            <div class="clue-actions">
+              <button id="copy-clue-btn" class="btn-copy-clue" type="button">
+                ✦ Copy Clue to Clipboard ✦
+              </button>
+            </div>
+          </div>
+
+          <!-- Secondary Scratch Card Container (when clueRevealStyle is "scratch") -->
+          <div id="clue-scratch-wrapper" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+            <p class="scratch-instruction-desc">Scratch the parchment foil to reveal the grand clue.</p>
+            <div class="scratch-card-box" id="clue-scratch-box" style="height: 220px;">
+              <div class="scratch-hidden-content" style="padding: 20px;">
+                <p id="clue-scratch-text-preview" style="font-family: var(--font-body); font-size: 19px; color: var(--heading-ivory); font-weight: 600;"></p>
+              </div>
+              <canvas id="clue-scratch-canvas" width="380" height="220"></canvas>
+            </div>
+            <div class="scratch-fallback-wrapper">
+              <button id="clue-scratch-fallback-btn" class="btn-reveal-fallback" type="button">
+                ✦ Reveal Clue (Accessible Fallback) ✦
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </main>
+
+    <!-- Footer with organizer reset option -->
+    <footer class="app-footer">
+      <p>॥ कालचक्रं प्रवर्तते ॥ • ARTIMAS LIVE EXPERIENCE</p>
+      <p style="margin-top: 6px;">
+        Progress is stored locally.
+        <button id="reset-progress-link" class="footer-reset-link" type="button">Reset Experience (?reset=1)</button>
+      </p>
+    </footer>
+
+  </div>
+
+  <!-- ==========================================================================
+       CLIENT SCRIPT & CONFIG BLOCK
+       ========================================================================== -->
+  <script>
+    /*
+      =============================================================================
+      SECTION 7: CONFIG BLOCK (Easily editable by organizers)
+      
+      HOW TO GENERATE SHA-256 ANSWER HASHES:
+      Open DevTools Console (F12) and run:
+        async function makeHash(str) {
+          const norm = str.normalize('NFC').trim().toLowerCase().replace(/\s+/g, ' ').replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, '');
+          const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(norm));
+          return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+        makeHash("your_answer_here").then(console.log);
+
+      DEMO / ACCEPTED ANSWERS INCLUDED IN THIS BUILD:
+      - Riddle 1 accepts: "Vikarna", "vikarna", "Vikarn", "विकर्ण" (and "test" for quick testing)
+      - Riddle 2 accepts: "Parashurama", "Parshurama", "Parashuram", "Parshuram", "Parasurama", "Parasuram", "परशुराम" (and "test")
+      =============================================================================
+    */
+    const CONFIG = {
+      eventName: "ARTIMAS — YUGA SANDHYA",
+      tagline: "Unravel the Celestial Enigma of Dharma",
+      riddles: [
+        {
+          id: 1,
+          text: "Who was the only Kaurava to openly oppose Draupadi's humiliation in the royal assembly?",
+          // Hashes for: "vikarna", "vikarn", "विकर्ण", "test"
+          answerHashes: [
+            "8947d97760f2b203ee98dd10c7883af1c36c5cbdfafc7830df0f058e415d758f", // vikarna
+            "1391857ef6ba1303ef75db02d9a874fe1a5d476f0f2a0cca62a5ed5df1368f0a", // vikarn
+            "a2b15daf81877ef6cde25f1c0eaee93c7697ddbc2db98c9b517cb23bc34c1147", // विकर्ण
+            "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"  // test
+          ],
+          reward: {
+            type: "word",
+            devanagari: "धर्म",
+            roman: "DHARMA"
+          }
+        },
+        {
+          id: 2,
+          text: "Who cursed Karna that he would forget the knowledge of the Brahmastra at the moment he needed it most?",
+          // Hashes for: "parashurama", "parshurama", "parashuram", "parshuram", "parasurama", "parasuram", "परशुराम", "sage parashurama", "sage parshurama", "guru parashurama", "guru parshurama", "test"
+          answerHashes: [
+            "0da7bd803b4008a39f4cd425e248181c27d156e896906b7c2f28a7fd6434392b", // parashurama
+            "76bbc95f0b846d19a3c9e1ce7fbaae8cab0dc703b9318a418d01f40c268702ba", // parshurama
+            "48fbbc2ff212dfc0f32c9f499e88c605e803fc1425332a18b8416eed8d021703", // parashuram
+            "cae53f4537f4b61619e4a83c534aea1c01ba8be209fbdef48477ece2d6a460dd", // parshuram
+            "d56fc51b7dc20d69403adac714c60f70b9b8fe4cfa53f4a0df6f9e52f547c04d", // parasurama
+            "6eeb1974864b1552b677ab91b39ba1143301ac52dcf969dbddde5acc6a1e1907", // parasuram
+            "de23d59be4903b9453616fcb7ac5698f635ffcd9f182077cb672504804bb0796", // परशुराम
+            "7e3b5f202aabcc99bcc34bcd3f46cfa49668784c7e0cdc782e6f0031df784457", // sage parashurama
+            "ae71a785661f3e4cab733d86864a0587761de4e1d3a1e730486781c26597ca2c", // sage parshurama
+            "900f444b6beb77fe4e1e4ee11d163cd803f1c189e949315ef49fd96558cd2c27", // guru parashurama
+            "4dadb4f17e990bb79db0bce1673bc11c19963a105de43322cfb77fea283cf836", // guru parshurama
+            "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"  // test
+          ],
+          reward: {
+            type: "clue",
+            text: "Seek the golden astrolabe beneath the fourth pillar of the Kalpa sanctum. The cipher aligns where the sun crosses the cosmic meridian."
+          }
+        }
+      ],
+      maxAttempts: 3,
+      cooldownSeconds: 0, // Set > 0 for lock cooldown in seconds between 3-attempt resets
+      clueRevealStyle: "seal", // "seal" | "scratch"
+      audio: {
+        enabled: true,
+        src: "https://res.cloudinary.com/qllarlul/video/upload/v1789888012/bhaktigeet_20s_background.mp3.mp3",
+        volume: 0.3
+      }
+    };
+
+    /*
+      =============================================================================
+      SECTION 8: WEB AUDIO API SYNTHESIZER (No external audio files required)
+      =============================================================================
+    */
+    class SacredSoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+
+      initCtx() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      // Wrong answer: deep resonant dissonant gong
+      playWrong() {
+        if (this.muted) return;
+        this.initCtx();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+
+        const osc1 = this.ctx.createOscillator();
+        const osc2 = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        const filter = this.ctx.createBiquadFilter();
+
+        osc1.type = 'sawtooth';
+        osc1.frequency.setValueAtTime(120, now);
+        osc1.frequency.exponentialRampToValueAtTime(70, now + 0.45);
+
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(114, now);
+        osc2.frequency.exponentialRampToValueAtTime(65, now + 0.45);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(450, now);
+        filter.frequency.exponentialRampToValueAtTime(120, now + 0.45);
+
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+
+        osc1.connect(filter);
+        osc2.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 0.55);
+        osc2.stop(now + 0.55);
+      }
+
+      // Penalty toll: solemn, ominous temple bell toll
+      playPenalty() {
+        if (this.muted) return;
+        this.initCtx();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+
+        const freqs = [80, 118, 162];
+        freqs.forEach((f, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(f, now);
+          osc.frequency.exponentialRampToValueAtTime(f * 0.95, now + 1.2);
+
+          const vol = 0.22 / (idx + 1);
+          gain.gain.setValueAtTime(vol, now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(now);
+          osc.stop(now + 1.25);
+        });
+      }
+
+      // Scratching spark whisper
+      playScratchSpark() {
+        if (this.muted) return;
+        this.initCtx();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1200 + Math.random() * 800, now);
+
+        gain.gain.setValueAtTime(0.03, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.06);
+      }
+
+      // Celestial Reveal Chime: Harmonic radiant chord
+      playReveal() {
+        if (this.muted) return;
+        this.initCtx();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+
+        const chord = [523.25, 659.25, 783.99, 1046.50]; // C5 major
+        chord.forEach((f, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(f, now + i * 0.08);
+
+          const vol = 0.18 / (i + 1);
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.linearRampToValueAtTime(vol, now + i * 0.08 + 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.8);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(now + i * 0.08);
+          osc.stop(now + 2.0);
+        });
+      }
+
+      // Docking in HUD slot: crystalline golden bell chime
+      playArrival() {
+        if (this.muted) return;
+        this.initCtx();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+
+        const notes = [1318.5, 1760.0, 2093.0]; // E6, A6, C7
+        notes.forEach((f, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(f, now + i * 0.06);
+
+          gain.gain.setValueAtTime(0.15, now + i * 0.06);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.1);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(now + i * 0.06);
+          osc.stop(now + 1.2);
+        });
+      }
+
+      // Ceremonial seal breaking chord
+      playUnseal() {
+        if (this.muted) return;
+        this.initCtx();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+
+        const notes = [220, 329.6, 440, 554.4, 659.3];
+        notes.forEach((f, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(f, now + i * 0.04);
+
+          gain.gain.setValueAtTime(0.2 / (i + 1), now + i * 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.2);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(now + i * 0.04);
+          osc.stop(now + 2.3);
+        });
+      }
+    }
+
+    const sound = new SacredSoundEngine();
+
+    /*
+      =============================================================================
+      SECTION 10: STATE MANAGEMENT & LOCAL STORAGE PERSISTENCE
+      =============================================================================
+    */
+    const STORAGE_KEY = "artimas_dharma_riddle_v2";
+
+    const defaultState = {
+      currentStage: 1,      // 1: Riddle 1; 2: Riddle 2; 3: Complete
+      attemptsUsed: 0,      // 0 to 3
+      penaltyCount: 0,      // Persistent across all riddles
+      stage1Solved: false,  // Answer verified
+      stage1Scratched: false, // Foil cleared
+      stage1Collected: false, // Word flew into top-right slot
+      stage2Solved: false,
+      stage2ClueRevealed: false
+    };
+
+    let appState = { ...defaultState };
+
+    function loadState() {
+      // Check ?reset=1 query parameter
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('reset') === '1') {
+        try {
+          localStorage.removeItem(STORAGE_KEY);
+        } catch (e) {}
+        window.history.replaceState({}, document.title, window.location.pathname);
+        return { ...defaultState };
+      }
+
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          return { ...defaultState, ...parsed };
+        }
+      } catch (e) {
+        console.warn("Storage unavailable, running in memory:", e);
+      }
+      return { ...defaultState };
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+      } catch (e) {}
+    }
+
+    /*
+      =============================================================================
+      SECTION 3: NORMALIZATION & CRYPTO HASH COMPARISON
+      =============================================================================
+    */
+    function normalizeAnswer(text) {
+      if (typeof text !== 'string') return '';
+      return text
+        .normalize('NFC')
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, ' ')
+        .replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, '');
+    }
+
+    async function hashText(norm) {
+      const buffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(norm));
+      return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function announceSR(msg) {
+      const el = document.getElementById('sr-announcements');
+      if (el) el.textContent = msg;
+    }
+
+    /*
+      =============================================================================
+      PARALLAX STARFIELD & NEBULA ENGINE
+      =============================================================================
+    */
+    class CosmicCanvas {
+      constructor() {
+        this.canvas = document.getElementById('stars-canvas');
+        this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
+        this.stars = [];
+        this.numStars = 140;
+        this.mouseX = 0;
+        this.mouseY = 0;
+        this.targetMouseX = 0;
+        this.targetMouseY = 0;
+        this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (this.canvas && this.ctx && !this.reducedMotion) {
+          this.init();
+        }
+      }
+
+      init() {
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+        window.addEventListener('mousemove', (e) => {
+          this.targetMouseX = (e.clientX / window.innerWidth - 0.5) * 40;
+          this.targetMouseY = (e.clientY / window.innerHeight - 0.5) * 40;
+        });
+
+        // Mobile gyroscope or tilt
+        if (window.DeviceOrientationEvent) {
+          window.addEventListener('deviceorientation', (e) => {
+            if (e.gamma !== null && e.beta !== null) {
+              this.targetMouseX = (e.gamma / 45) * 20;
+              this.targetMouseY = ((e.beta - 45) / 45) * 20;
+            }
+          });
+        }
+
+        // Initialize stars with depth
+        this.stars = [];
+        for (let i = 0; i < this.numStars; i++) {
+          this.stars.push({
+            x: Math.random() * this.canvas.width,
+            y: Math.random() * this.canvas.height,
+            size: Math.random() * 1.7 + 0.4,
+            depth: Math.random() * 2.5 + 0.5,
+            alpha: Math.random() * 0.7 + 0.3,
+            twinkleSpeed: Math.random() * 0.02 + 0.005,
+            twinklePhase: Math.random() * Math.PI * 2
+          });
+        }
+
+        this.render();
+      }
+
+      resize() {
+        if (!this.canvas) return;
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+      }
+
+      render() {
+        if (this.reducedMotion || !this.ctx) return;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Smooth mouse parallax interpolation
+        this.mouseX += (this.targetMouseX - this.mouseX) * 0.05;
+        this.mouseY += (this.targetMouseY - this.mouseY) * 0.05;
+
+        const time = Date.now() * 0.001;
+
+        for (let i = 0; i < this.stars.length; i++) {
+          const s = this.stars[i];
+          const px = s.x + this.mouseX * s.depth;
+          const py = s.y + this.mouseY * s.depth;
+
+          // Twinkle formula
+          const tw = Math.sin(time * 3 + s.twinklePhase) * 0.25;
+          const currentAlpha = Math.max(0.1, Math.min(1, s.alpha + tw));
+
+          this.ctx.beginPath();
+          this.ctx.arc(px, py, s.size, 0, Math.PI * 2);
+          // Gold and ivory stars
+          if (i % 4 === 0) {
+            this.ctx.fillStyle = `rgba(201, 164, 92, ${currentAlpha})`;
+          } else {
+            this.ctx.fillStyle = `rgba(232, 216, 176, ${currentAlpha * 0.9})`;
+          }
+          this.ctx.fill();
+        }
+
+        requestAnimationFrame(() => this.render());
+      }
+    }
+
+    /*
+      =============================================================================
+      SECTION 5: SCRATCH CARD ENGINE (High-DPI, Destination-Out, Auto-Reveal)
+      =============================================================================
+    */
+    class ScratchCardManager {
+      constructor(canvasId, containerId, onCompleteCallback) {
+        this.canvas = document.getElementById(canvasId);
+        this.container = document.getElementById(containerId);
+        this.onComplete = onCompleteCallback;
+        this.ctx = this.canvas ? this.canvas.getContext('2d', { willReadFrequently: true }) : null;
+        this.isScratching = false;
+        this.cleared = false;
+        this.lastPoint = null;
+        this.checkThrottle = 0;
+        this.brushRadius = 26;
+        this.init();
+      }
+
+      init() {
+        if (!this.canvas || !this.ctx) return;
+        this.setupDPI();
+        this.drawFoil();
+        this.bindEvents();
+      }
+
+      setupDPI() {
+        const rect = this.canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        this.cssWidth = rect.width || 380;
+        this.cssHeight = rect.height || 200;
+        this.canvas.width = this.cssWidth * dpr;
+        this.canvas.height = this.cssHeight * dpr;
+        this.ctx.scale(dpr, dpr);
+      }
+
+      drawFoil() {
+        const w = this.cssWidth;
+        const h = this.cssHeight;
+        this.ctx.globalCompositeOperation = 'source-over';
+
+        // Rich metallic gold gradient
+        const grad = this.ctx.createLinearGradient(0, 0, w, h);
+        grad.addColorStop(0.00, '#684d1e');
+        grad.addColorStop(0.20, '#c9a45c');
+        grad.addColorStop(0.38, '#fae8a4');
+        grad.addColorStop(0.55, '#9e752e');
+        grad.addColorStop(0.72, '#ffd875');
+        grad.addColorStop(0.88, '#8c6424');
+        grad.addColorStop(1.00, '#dcb569');
+        this.ctx.fillStyle = grad;
+        this.ctx.fillRect(0, 0, w, h);
+
+        // Procedural stardust texture / grain
+        for (let i = 0; i < 240; i++) {
+          const rx = Math.random() * w;
+          const ry = Math.random() * h;
+          const rad = Math.random() * 1.5;
+          this.ctx.beginPath();
+          this.ctx.arc(rx, ry, rad, 0, Math.PI * 2);
+          this.ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255, 250, 220, 0.45)' : 'rgba(58, 36, 21, 0.35)';
+          this.ctx.fill();
+        }
+
+        // Embossed Sacred Border on Foil
+        this.ctx.strokeStyle = 'rgba(255, 240, 180, 0.6)';
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(10, 10, w - 20, h - 20);
+
+        this.ctx.strokeStyle = 'rgba(118, 85, 47, 0.7)';
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeRect(14, 14, w - 28, h - 28);
+
+        // Center sacred inscription on foil
+        this.ctx.fillStyle = 'rgba(40, 24, 12, 0.85)';
+        this.ctx.font = 'bold 15px "Cinzel", Georgia, serif';
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+        this.ctx.fillText('✦ SCRATCH TO REVEAL ✦', w / 2, h / 2 - 8);
+
+        this.ctx.font = '13px "Noto Serif Devanagari", Georgia, serif';
+        this.ctx.fillStyle = 'rgba(58, 36, 21, 0.75)';
+        this.ctx.fillText('॥ खरोच कर प्रकट करें ॥', w / 2, h / 2 + 16);
+      }
+
+      getCanvasPos(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        return {
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top
+        };
+      }
+
+      bindEvents() {
+        const onDown = (e) => {
+          if (this.cleared) return;
+          this.isScratching = true;
+          this.lastPoint = this.getCanvasPos(e);
+          this.erase(this.lastPoint.x, this.lastPoint.y);
+          this.spawnSparkle(e.clientX, e.clientY);
+        };
+
+        const onMove = (e) => {
+          if (!this.isScratching || this.cleared) return;
+          const pos = this.getCanvasPos(e);
+          this.eraseStroke(this.lastPoint.x, this.lastPoint.y, pos.x, pos.y);
+          this.lastPoint = pos;
+          this.spawnSparkle(e.clientX, e.clientY);
+          sound.playScratchSpark();
+
+          const now = Date.now();
+          if (now - this.checkThrottle > 180) {
+            this.checkThrottle = now;
+            this.checkClearing();
+          }
+        };
+
+        const onUp = () => {
+          this.isScratching = false;
+          this.lastPoint = null;
+        };
+
+        this.canvas.addEventListener('pointerdown', onDown);
+        window.addEventListener('pointermove', onMove);
+        window.addEventListener('pointerup', onUp);
+        window.addEventListener('pointercancel', onUp);
+      }
+
+      erase(x, y) {
+        this.ctx.save();
+        this.ctx.globalCompositeOperation = 'destination-out';
+        const radGrad = this.ctx.createRadialGradient(x, y, this.brushRadius * 0.35, x, y, this.brushRadius);
+        radGrad.addColorStop(0, 'rgba(0, 0, 0, 1)');
+        radGrad.addColorStop(0.75, 'rgba(0, 0, 0, 0.85)');
+        radGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        this.ctx.fillStyle = radGrad;
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, this.brushRadius, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.restore();
+      }
+
+      eraseStroke(x1, y1, x2, y2) {
+        const dist = Math.hypot(x2 - x1, y2 - y1);
+        const step = Math.max(4, this.brushRadius * 0.35);
+        const steps = Math.ceil(dist / step);
+        for (let i = 0; i <= steps; i++) {
+          const t = steps === 0 ? 0 : i / steps;
+          const xi = x1 + (x2 - x1) * t;
+          const yi = y1 + (y2 - y1) * t;
+          this.erase(xi, yi);
+        }
+      }
+
+      spawnSparkle(clientX, clientY) {
+        if (Math.random() > 0.4) return;
+        const spark = document.createElement('div');
+        spark.className = 'sparkle-particle';
+        spark.style.left = `${clientX}px`;
+        spark.style.top = `${clientY}px`;
+        spark.style.setProperty('--dx', `${(Math.random() - 0.5) * 40}px`);
+        spark.style.setProperty('--dy', `${(Math.random() - 0.5) * 40}px`);
+        document.body.appendChild(spark);
+        setTimeout(() => spark.remove(), 450);
+      }
+
+      checkClearing() {
+        if (this.cleared) return;
+        const dpr = window.devicePixelRatio || 1;
+        const fullW = Math.floor(this.cssWidth * dpr);
+        const fullH = Math.floor(this.cssHeight * dpr);
+
+        let imgData;
+        try {
+          imgData = this.ctx.getImageData(0, 0, fullW, fullH);
+        } catch (e) {
+          return;
+        }
+
+        const data = imgData.data;
+        let total = 0;
+        let clear = 0;
+        const stride = 16 * 4; // Sample every 16th pixel for high speed
+
+        for (let i = 3; i < data.length; i += stride) {
+          total++;
+          if (data[i] < 30) {
+            clear++;
+          }
+        }
+
+        const ratio = clear / total;
+        if (ratio >= 0.55) {
+          this.triggerAutoReveal();
+        }
+      }
+
+      triggerAutoReveal() {
+        if (this.cleared) return;
+        this.cleared = true;
+        this.canvas.style.opacity = '0';
+        setTimeout(() => {
+          if (this.canvas) this.canvas.style.display = 'none';
+          if (this.onComplete) this.onComplete();
+        }, 460);
+      }
+    }
+
+    /*
+      =============================================================================
+      CONTROLLER & APPLICATION LOGIC
+      =============================================================================
+    */
+    class ArtimasExperience {
+      constructor() {
+        this.state = loadState();
+        this.cosmicCanvas = new CosmicCanvas();
+        this.scratchManager = null;
+        this.clueScratchManager = null;
+        this.audioEl = document.getElementById('bg-audio');
+        this.audioBtn = document.getElementById('audio-toggle-btn');
+        this.audioLabel = document.getElementById('audio-toggle-label');
+        this.isAudioPlaying = false;
+        this.userInteracted = false;
+        this.isCooldownActive = false;
+
+        this.initDOM();
+        this.initAudio();
+        this.renderAll();
+      }
+
+      initDOM() {
+        // Populate text from CONFIG
+        document.getElementById('event-title-display').textContent = CONFIG.eventName;
+        document.getElementById('event-tagline-display').textContent = CONFIG.tagline;
+        document.getElementById('riddle-1-text').textContent = CONFIG.riddles[0].text;
+        document.getElementById('riddle-2-text').textContent = CONFIG.riddles[1].text;
+        document.getElementById('reward-devanagari').textContent = CONFIG.riddles[0].reward.devanagari;
+        document.getElementById('reward-roman').textContent = CONFIG.riddles[0].reward.roman;
+        document.getElementById('clue-text-display').textContent = CONFIG.riddles[1].reward.text;
+        document.getElementById('clue-scratch-text-preview').textContent = CONFIG.riddles[1].reward.text;
+
+        // Forms
+        document.getElementById('riddle-1-form').addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.handleAnswerSubmit(1);
+        });
+
+        document.getElementById('riddle-2-form').addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.handleAnswerSubmit(2);
+        });
+
+        // Accessible scratch fallback buttons
+        document.getElementById('scratch-fallback-btn').addEventListener('click', () => {
+          if (this.scratchManager) {
+            this.scratchManager.triggerAutoReveal();
+          }
+        });
+
+        const clueFallback = document.getElementById('clue-scratch-fallback-btn');
+        if (clueFallback) {
+          clueFallback.addEventListener('click', () => {
+            if (this.clueScratchManager) {
+              this.clueScratchManager.triggerAutoReveal();
+            }
+          });
+        }
+
+        // Seal click trigger (Stage 2)
+        const sealTrigger = document.getElementById('seal-trigger-box');
+        if (sealTrigger) {
+          sealTrigger.addEventListener('click', () => this.unsealCeremony());
+          sealTrigger.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              this.unsealCeremony();
+            }
+          });
+        }
+
+        // Copy Clue button
+        const copyBtn = document.getElementById('copy-clue-btn');
+        if (copyBtn) {
+          copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(CONFIG.riddles[1].reward.text).then(() => {
+              copyBtn.textContent = '✓ Clue Copied to Clipboard!';
+              setTimeout(() => {
+                copyBtn.textContent = '✦ Copy Clue to Clipboard ✦';
+              }, 2500);
+            });
+          });
+        }
+
+        // Reset experience link
+        document.getElementById('reset-progress-link').addEventListener('click', () => {
+          this.resetAll();
+        });
+      }
+
+      initAudio() {
+        if (!CONFIG.audio.enabled || !CONFIG.audio.src) return;
+        this.audioEl.src = CONFIG.audio.src;
+        this.audioEl.volume = CONFIG.audio.volume || 0.3;
+
+        const startAudioOnGesture = () => {
+          if (this.userInteracted) return;
+          this.userInteracted = true;
+          sound.initCtx();
+          if (!sound.muted) {
+            this.audioEl.play().then(() => {
+              this.isAudioPlaying = true;
+              this.updateAudioUI(true);
+            }).catch(() => {});
+          }
+          window.removeEventListener('pointerdown', startAudioOnGesture);
+          window.removeEventListener('keydown', startAudioOnGesture);
+        };
+
+        window.addEventListener('pointerdown', startAudioOnGesture);
+        window.addEventListener('keydown', startAudioOnGesture);
+
+        this.audioBtn.addEventListener('click', () => {
+          sound.initCtx();
+          if (this.isAudioPlaying) {
+            this.audioEl.pause();
+            this.isAudioPlaying = false;
+            sound.muted = true;
+            this.updateAudioUI(false);
+          } else {
+            sound.muted = false;
+            this.audioEl.play().then(() => {
+              this.isAudioPlaying = true;
+              this.updateAudioUI(true);
+            }).catch(() => {});
+          }
+        });
+      }
+
+      updateAudioUI(playing) {
+        if (playing) {
+          this.audioBtn.classList.remove('audio-paused');
+          this.audioLabel.textContent = "AUDIO: ON";
+        } else {
+          this.audioBtn.classList.add('audio-paused');
+          this.audioLabel.textContent = "AUDIO: OFF";
+        }
+      }
+
+      renderAll() {
+        // Penalties HUD
+        const penaltyBox = document.getElementById('penalty-count-display');
+        penaltyBox.textContent = this.state.penaltyCount;
+
+        // Attempts HUD
+        this.renderAttemptsUI();
+
+        // Top-Right Slot
+        const slotEl = document.getElementById('collected-words-slot');
+        if (this.state.stage1Collected) {
+          slotEl.classList.add('has-word');
+        } else {
+          slotEl.classList.remove('has-word');
+        }
+
+        // Stage Navigator / Chamber state
+        const chamberBadge = document.getElementById('hero-chamber-text');
+        const stage1Card = document.getElementById('stage-1-card');
+        const stage2LockedBanner = document.getElementById('stage-2-locked-banner');
+        const stage2Container = document.getElementById('stage-2-container');
+
+        if (!this.state.stage1Collected) {
+          // STAGE 1 ACTIVE
+          chamberBadge.textContent = "CHAMBER I: THE SACRED SEED";
+          stage1Card.style.display = "block";
+          stage2LockedBanner.style.display = "flex";
+          stage2Container.classList.remove('visible');
+
+          if (this.state.stage1Solved && !this.state.stage1Scratched) {
+            this.showScratchCard1();
+          }
+        } else {
+          // STAGE 1 COLLECTED -> STAGE 2 UNLOCKED
+          chamberBadge.textContent = "CHAMBER II: THE KALPA CIPHER";
+          stage2LockedBanner.style.display = "none";
+          stage2Container.classList.add('visible');
+
+          // Mark Stage 1 card as completed
+          document.getElementById('riddle-1-status').textContent = "CHAMBER CONQUERED";
+          document.getElementById('riddle-1-input').disabled = true;
+          document.getElementById('riddle-1-submit').disabled = true;
+          document.getElementById('riddle-1-submit').textContent = "Deciphered ✓";
+          document.getElementById('scratch-stage-1').style.display = "none";
+
+          if (this.state.stage2Solved) {
+            document.getElementById('riddle-2-status').textContent = "CIPHER SOLVED";
+            document.getElementById('riddle-2-input').disabled = true;
+            document.getElementById('riddle-2-submit').disabled = true;
+            document.getElementById('riddle-2-submit').textContent = "Deciphered ✓";
+            this.showClueSection();
+          }
+        }
+      }
+
+      renderAttemptsUI() {
+        const used = this.state.attemptsUsed;
+        const max = CONFIG.maxAttempts;
+        const currentAttempt = Math.min(used + 1, max);
+
+        document.getElementById('attempt-label-display').textContent = `Attempt ${currentAttempt} of ${max}`;
+
+        for (let i = 1; i <= 3; i++) {
+          const pip = document.getElementById(`pip-${i}`);
+          if (i <= (max - used)) {
+            pip.className = 'attempt-pip available';
+          } else {
+            pip.className = 'attempt-pip used';
+          }
+        }
+      }
+
+      /*
+        ===========================================================================
+        SECTION 4: ATTEMPT + PENALTY LOGIC
+        ===========================================================================
+      */
+      async handleAnswerSubmit(stageNum) {
+        if (this.isCooldownActive) return;
+
+        const inputEl = document.getElementById(`riddle-${stageNum}-input`);
+        const feedbackEl = document.getElementById(`riddle-${stageNum}-feedback`);
+        const cardEl = stageNum === 1 ? document.getElementById('stage-1-card') : document.getElementById('stage-2-container');
+
+        const raw = inputEl.value;
+        const norm = normalizeAnswer(raw);
+
+        // Empty submission does nothing & consumes no attempt
+        if (!norm) {
+          inputEl.focus();
+          return;
+        }
+
+        const userHash = await hashText(norm);
+        const riddleConfig = CONFIG.riddles[stageNum - 1];
+        const isCorrect = riddleConfig.answerHashes.includes(userHash);
+
+        if (isCorrect) {
+          // CORRECT ANSWER
+          feedbackEl.className = 'feedback-banner success';
+          feedbackEl.textContent = '✦ Cosmic resonance achieved! Riddle deciphered.';
+          announceSR("Correct answer! Cosmic riddle deciphered.");
+          inputEl.disabled = true;
+          document.getElementById(`riddle-${stageNum}-submit`).disabled = true;
+
+          if (stageNum === 1) {
+            this.state.stage1Solved = true;
+            saveState();
+            this.showScratchCard1();
+          } else {
+            this.state.stage2Solved = true;
+            saveState();
+            this.showClueSection();
+          }
+        } else {
+          // WRONG ANSWER
+          this.state.attemptsUsed += 1;
+          sound.playWrong();
+
+          // Visual themed shake
+          cardEl.classList.remove('card-shake');
+          void cardEl.offsetWidth; // Trigger reflow
+          cardEl.classList.add('card-shake');
+
+          if (this.state.attemptsUsed < CONFIG.maxAttempts) {
+            // Still have attempts left
+            feedbackEl.className = 'feedback-banner error';
+            feedbackEl.textContent = `✕ The cosmic waters remain silent. Incorrect answer (${this.state.attemptsUsed}/${CONFIG.maxAttempts}).`;
+            announceSR(`Incorrect answer. Attempt ${this.state.attemptsUsed} of ${CONFIG.maxAttempts}.`);
+            this.renderAttemptsUI();
+            saveState();
+          } else {
+            // 3RD WRONG ANSWER -> PENALTY APPLIED & ATTEMPTS RESTORED
+            this.state.penaltyCount += 1;
+            sound.playPenalty();
+
+            const penaltyBadge = document.getElementById('penalty-badge');
+            penaltyBadge.classList.remove('penalty-bump');
+            void penaltyBadge.offsetWidth;
+            penaltyBadge.classList.add('penalty-bump');
+
+            feedbackEl.className = 'feedback-banner penalty-notice';
+            feedbackEl.textContent = '⚔ 3 attempts exhausted — Penalty applied (+1). 3 attempts restored.';
+            announceSR('3 attempts exhausted. One penalty applied. Three attempts restored.');
+
+            // Cooldown handling
+            if (CONFIG.cooldownSeconds > 0) {
+              this.applyCooldown(stageNum);
+            } else {
+              this.state.attemptsUsed = 0;
+              this.renderAll();
+              saveState();
+            }
+          }
+        }
+      }
+
+      applyCooldown(stageNum) {
+        this.isCooldownActive = true;
+        const inputEl = document.getElementById(`riddle-${stageNum}-input`);
+        const btnEl = document.getElementById(`riddle-${stageNum}-submit`);
+        const cdEl = document.getElementById(`riddle-${stageNum}-cooldown`);
+
+        inputEl.disabled = true;
+        btnEl.disabled = true;
+        cdEl.style.display = 'block';
+
+        let remaining = CONFIG.cooldownSeconds;
+        cdEl.textContent = `Chamber cooling down: ${remaining}s...`;
+
+        const interval = setInterval(() => {
+          remaining--;
+          if (remaining > 0) {
+            cdEl.textContent = `Chamber cooling down: ${remaining}s...`;
+          } else {
+            clearInterval(interval);
+            cdEl.style.display = 'none';
+            this.isCooldownActive = false;
+            this.state.attemptsUsed = 0;
+            inputEl.disabled = false;
+            btnEl.disabled = false;
+            inputEl.focus();
+            this.renderAll();
+            saveState();
+          }
+        }, 1000);
+      }
+
+      /*
+        ===========================================================================
+        SECTION 5: SCRATCH CARD & FLIGHT TO CORNER ANIMATION
+        ===========================================================================
+      */
+      showScratchCard1() {
+        const container = document.getElementById('scratch-stage-1');
+        container.classList.add('visible');
+
+        if (!this.scratchManager) {
+          this.scratchManager = new ScratchCardManager('scratch-canvas', 'scratch-box', () => {
+            this.onScratch1Revealed();
+          });
+        }
+      }
+
+      onScratch1Revealed() {
+        if (this.state.stage1Scratched) return;
+        this.state.stage1Scratched = true;
+        saveState();
+
+        sound.playReveal();
+        announceSR("Devanagari word DHARMA revealed!");
+
+        // Confetti burst
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 50,
+            spread: 60,
+            origin: { y: 0.65 },
+            colors: ['#c9a45c', '#e8d8b0', '#e07a2c', '#ffffff']
+          });
+        }
+
+        // ~1s pause, then fly to top-right slot
+        setTimeout(() => {
+          this.flyWordToSlot();
+        }, 1000);
+      }
+
+      flyWordToSlot() {
+        const sourceDevanagari = document.getElementById('reward-devanagari');
+        const targetSlot = document.getElementById('collected-words-slot');
+
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (reducedMotion) {
+          // Instant completion for reduced motion
+          this.completeWordCollection();
+          return;
+        }
+
+        const srcRect = sourceDevanagari.getBoundingClientRect();
+        const dstRect = targetSlot.getBoundingClientRect();
+
+        // Create flying clone
+        const clone = document.createElement('div');
+        clone.className = 'flying-word-clone';
+        clone.innerHTML = `
+          <div class="scratch-word-devanagari">धर्म</div>
+          <div class="scratch-word-roman">DHARMA</div>
+        `;
+        clone.style.left = `${srcRect.left + srcRect.width / 2}px`;
+        clone.style.top = `${srcRect.top + srcRect.height / 2}px`;
+        clone.style.transform = 'translate(-50%, -50%) scale(1)';
+        document.body.appendChild(clone);
+
+        const deltaX = (dstRect.left + dstRect.width / 2) - (srcRect.left + srcRect.width / 2);
+        const deltaY = (dstRect.top + dstRect.height / 2) - (srcRect.top + srcRect.height / 2);
+
+        // Fade original card slightly while flying
+        const hiddenContent = document.getElementById('scratch-hidden-content');
+        if (hiddenContent) {
+          hiddenContent.style.transition = 'opacity 0.4s ease';
+          hiddenContent.style.opacity = '0.2';
+        }
+
+        // WAAPI Flight animation
+        const anim = clone.animate([
+          {
+            transform: 'translate(-50%, -50%) scale(1)',
+            opacity: 1,
+            filter: 'drop-shadow(0 0 15px rgba(201, 164, 92, 0.8))'
+          },
+          {
+            transform: `translate(calc(-50% + ${deltaX * 0.45}px), calc(-50% + ${deltaY * 0.25 - 45}px)) scale(1.25)`,
+            opacity: 1,
+            offset: 0.4,
+            filter: 'drop-shadow(0 0 35px rgba(254, 232, 164, 1))'
+          },
+          {
+            transform: `translate(calc(-50% + ${deltaX}px), calc(-50% + ${deltaY}px)) scale(0.38)`,
+            opacity: 0.95,
+            filter: 'drop-shadow(0 0 10px rgba(201, 164, 92, 0.6))'
+          }
+        ], {
+          duration: 950,
+          easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
+          fill: 'forwards'
+        });
+
+        anim.onfinish = () => {
+          clone.remove();
+          this.completeWordCollection();
+        };
+      }
+
+      completeWordCollection() {
+        this.state.stage1Collected = true;
+        this.state.currentStage = 2;
+        this.state.attemptsUsed = 0; // Restore fresh 3 attempts for Chamber 2
+        saveState();
+
+        sound.playArrival();
+
+        const slot = document.getElementById('collected-words-slot');
+        slot.classList.add('has-word', 'arrival-pulse');
+
+        announceSR("Word DHARMA permanently collected into vault. Chamber II unlocked!");
+
+        // Staged reveal of Stage 2
+        setTimeout(() => {
+          this.renderAll();
+          const r2Input = document.getElementById('riddle-2-input');
+          const r2Container = document.getElementById('stage-2-container');
+          if (r2Container) {
+            r2Container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+          if (r2Input) r2Input.focus();
+        }, 400);
+      }
+
+      /*
+        ===========================================================================
+        SECTION 6: STAGE 2 CLUE REVEAL (Seal Unbreak or Scratch Card)
+        ===========================================================================
+      */
+      showClueSection() {
+        const ceremony = document.getElementById('clue-ceremony-section');
+        ceremony.classList.add('visible');
+
+        if (CONFIG.clueRevealStyle === "scratch") {
+          document.getElementById('seal-trigger-box').style.display = 'none';
+          document.getElementById('clue-scratch-wrapper').style.display = 'flex';
+
+          if (!this.clueScratchManager) {
+            this.clueScratchManager = new ScratchCardManager('clue-scratch-canvas', 'clue-scratch-box', () => {
+              this.onClueRevealed();
+            });
+          }
+        } else {
+          // "seal" style
+          if (this.state.stage2ClueRevealed) {
+            document.getElementById('seal-trigger-box').style.display = 'none';
+            document.getElementById('clue-parchment-scroll').classList.add('revealed');
+          }
+        }
+      }
+
+      unsealCeremony() {
+        if (this.state.stage2ClueRevealed) return;
+        const seal = document.getElementById('seal-trigger-box');
+        seal.classList.add('seal-breaking');
+
+        sound.playUnseal();
+
+        setTimeout(() => {
+          seal.style.display = 'none';
+          this.onClueRevealed();
+        }, 900);
+      }
+
+      onClueRevealed() {
+        this.state.stage2ClueRevealed = true;
+        saveState();
+
+        sound.playReveal();
+        announceSR("Grand Clue revealed!");
+
+        const scroll = document.getElementById('clue-parchment-scroll');
+        scroll.classList.add('revealed');
+
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 80,
+            spread: 90,
+            origin: { y: 0.6 },
+            colors: ['#c9a45c', '#f5ecd6', '#e07a2c', '#3ca370']
+          });
+        }
+      }
+
+      resetAll() {
+        try {
+          localStorage.removeItem(STORAGE_KEY);
+        } catch (e) {}
+        this.state = { ...defaultState };
+        window.location.href = window.location.pathname;
+      }
+    }
+
+    // Launch on DOM ready
+    window.addEventListener('DOMContentLoaded', () => {
+      new ArtimasExperience();
+    });
+  </script>
+</body>
+</html>
