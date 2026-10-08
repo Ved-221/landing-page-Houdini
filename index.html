@@ -1116,12 +1116,14 @@
 
     .clue-content-text {
       font-family: var(--font-body);
-      font-size: clamp(21px, 3.2vw, 29px);
-      font-weight: 600;
-      line-height: 1.5;
+      font-size: clamp(17px, 2.2vw, 21px);
+      font-weight: 500;
+      line-height: 1.8;
       color: var(--heading-ivory);
       text-shadow: 0 0 20px rgba(201, 164, 92, 0.4);
-      margin-bottom: 22px;
+      margin-bottom: 24px;
+      white-space: pre-line;
+      text-align: center;
     }
 
     .clue-actions {
@@ -1592,7 +1594,7 @@
             <p class="scratch-instruction-desc">Scratch the parchment foil to reveal the grand clue.</p>
             <div class="scratch-card-box" id="clue-scratch-box" style="height: 220px;">
               <div class="scratch-hidden-content" style="padding: 20px;">
-                <p id="clue-scratch-text-preview" style="font-family: var(--font-body); font-size: 19px; color: var(--heading-ivory); font-weight: 600;"></p>
+                <p id="clue-scratch-text-preview" style="font-family: var(--font-body); font-size: 16px; color: var(--heading-ivory); font-weight: 500; line-height: 1.6; white-space: pre-line;"></p>
               </div>
               <canvas id="clue-scratch-canvas" width="380" height="220"></canvas>
             </div>
@@ -1716,7 +1718,22 @@
           ],
           reward: {
             type: "clue",
-            text: "Seek the golden astrolabe beneath the fourth pillar of the Kalpa sanctum. The cipher aligns where the sun crosses the cosmic meridian."
+            text: `Across the ages,
+kingdoms have risen and fallen.
+Warriors have come and gone.
+Yet some principles were never meant to perish.
+
+They were tested by power,
+challenged by time,
+and carried forward by those who chose to uphold them.
+
+You have uncovered fragments of an ancient idea.
+But fragments alone are not the answer.
+Bring together what you have discovered
+and let the ancient wisdom speak for itself.
+
+
+ANS : धर्मो रक्षति रक्षितः`
           }
         }
       ],
