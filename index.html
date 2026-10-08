@@ -540,6 +540,18 @@
       box-shadow: none;
     }
 
+    .attempt-pip.direct-penalty-pip {
+      background: #e04545;
+      border-color: #ff7575;
+      box-shadow: 0 0 10px rgba(255, 82, 82, 0.85);
+      animation: pulseDirectPip 1.5s infinite ease-in-out;
+    }
+
+    @keyframes pulseDirectPip {
+      0%, 100% { transform: rotate(45deg) scale(0.95); opacity: 0.85; }
+      50%      { transform: rotate(45deg) scale(1.15); opacity: 1; box-shadow: 0 0 14px rgba(255, 82, 82, 1); }
+    }
+
     /* Main Container & Riddle Cards */
     .main-content {
       width: 100%;
@@ -1709,6 +1721,7 @@
         }
       ],
       maxAttempts: 3,
+      directPenaltyThreshold: 4, // After 4 penalties, each guess adds 1 penalty directly
       cooldownSeconds: 0, // Set > 0 for lock cooldown in seconds between 3-attempt resets
       clueRevealStyle: "seal", // "seal" | "scratch"
       audio: {
@@ -2519,18 +2532,33 @@
       }
 
       renderAttemptsUI() {
-        const used = this.state.attemptsUsed;
-        const max = CONFIG.maxAttempts;
-        const currentAttempt = Math.min(used + 1, max);
+        const threshold = CONFIG.directPenaltyThreshold || 4;
+        const isDirectPenalty = this.state.penaltyCount >= threshold;
 
-        document.getElementById('attempt-label-display').textContent = `Attempt ${currentAttempt} of ${max}`;
+        if (isDirectPenalty) {
+          document.getElementById('attempt-label-display').textContent = `Direct Penalty: +1 / Guess`;
+          for (let i = 1; i <= 3; i++) {
+            const pip = document.getElementById(`pip-${i}`);
+            if (pip) {
+              pip.className = 'attempt-pip direct-penalty-pip';
+            }
+          }
+        } else {
+          const used = this.state.attemptsUsed;
+          const max = CONFIG.maxAttempts;
+          const currentAttempt = Math.min(used + 1, max);
 
-        for (let i = 1; i <= 3; i++) {
-          const pip = document.getElementById(`pip-${i}`);
-          if (i <= (max - used)) {
-            pip.className = 'attempt-pip available';
-          } else {
-            pip.className = 'attempt-pip used';
+          document.getElementById('attempt-label-display').textContent = `Attempt ${currentAttempt} of ${max}`;
+
+          for (let i = 1; i <= 3; i++) {
+            const pip = document.getElementById(`pip-${i}`);
+            if (pip) {
+              if (i <= (max - used)) {
+                pip.className = 'attempt-pip available';
+              } else {
+                pip.className = 'attempt-pip used';
+              }
+            }
           }
         }
       }
@@ -2579,7 +2607,6 @@
           }
         } else {
           // WRONG ANSWER
-          this.state.attemptsUsed += 1;
           sound.playWrong();
 
           // Visual themed shake
@@ -2587,49 +2614,118 @@
           void cardEl.offsetWidth; // Trigger reflow
           cardEl.classList.add('card-shake');
 
-          if (this.state.attemptsUsed < CONFIG.maxAttempts) {
-            // Still have attempts left
-            feedbackEl.className = 'feedback-banner error';
-            feedbackEl.textContent = `✕ The cosmic waters remain silent. Incorrect answer (${this.state.attemptsUsed}/${CONFIG.maxAttempts}).`;
-            announceSR(`Incorrect answer. Attempt ${this.state.attemptsUsed} of ${CONFIG.maxAttempts}.`);
-            this.renderAttemptsUI();
-            saveState();
+          const threshold = CONFIG.directPenaltyThreshold || 4;
 
-            // Trigger full-page center popup modal
-            this.showAttemptModal(this.state.attemptsUsed, CONFIG.maxAttempts, false, stageNum);
-          } else {
-            // 3RD WRONG ANSWER -> PENALTY APPLIED & ATTEMPTS RESTORED
+          if (this.state.penaltyCount >= threshold) {
+            // DIRECT PENALTY MODE (penaltyCount >= 4: each guess adds +1 penalty directly)
             this.state.penaltyCount += 1;
             sound.playPenalty();
 
             const penaltyBadge = document.getElementById('penalty-badge');
-            penaltyBadge.classList.remove('penalty-bump');
-            void penaltyBadge.offsetWidth;
-            penaltyBadge.classList.add('penalty-bump');
+            if (penaltyBadge) {
+              penaltyBadge.classList.remove('penalty-bump');
+              void penaltyBadge.offsetWidth;
+              penaltyBadge.classList.add('penalty-bump');
+            }
 
             feedbackEl.className = 'feedback-banner penalty-notice';
-            feedbackEl.textContent = '⚔ 3 attempts exhausted — Penalty applied (+1). 3 attempts restored.';
-            announceSR('3 attempts exhausted. One penalty applied. Three attempts restored.');
+            feedbackEl.textContent = `⚔ Incorrect answer — 1 penalty added! (Total: ${this.state.penaltyCount}).`;
+            announceSR(`Incorrect answer. One penalty added. Total penalties: ${this.state.penaltyCount}.`);
 
-            // Trigger full-page center popup modal for 3rd attempt / penalty
-            this.showAttemptModal(3, CONFIG.maxAttempts, true, stageNum);
+            this.renderAll();
+            saveState();
 
-            // Cooldown handling
+            // Trigger full-page center popup modal for direct penalty
+            this.showAttemptModal({
+              type: 'direct-penalty',
+              stageNum
+            });
+
             if (CONFIG.cooldownSeconds > 0) {
               this.applyCooldown(stageNum);
+            }
+          } else {
+            // REGULAR 3-ATTEMPT CYCLE (penaltyCount < 4)
+            this.state.attemptsUsed += 1;
+
+            if (this.state.attemptsUsed < CONFIG.maxAttempts) {
+              // Still have attempts left
+              feedbackEl.className = 'feedback-banner error';
+              feedbackEl.textContent = `✕ Incorrect answer (${this.state.attemptsUsed}/${CONFIG.maxAttempts}).`;
+              announceSR(`Incorrect answer. Attempt ${this.state.attemptsUsed} of ${CONFIG.maxAttempts}.`);
+              this.renderAttemptsUI();
+              saveState();
+
+              // Trigger full-page center popup modal
+              this.showAttemptModal({
+                type: 'attempt-consumed',
+                attemptsUsed: this.state.attemptsUsed,
+                maxAttempts: CONFIG.maxAttempts,
+                stageNum
+              });
             } else {
+              // 3RD WRONG ANSWER -> PENALTY APPLIED & ATTEMPTS RESTORED
+              this.state.penaltyCount += 1;
+              sound.playPenalty();
+
+              const penaltyBadge = document.getElementById('penalty-badge');
+              if (penaltyBadge) {
+                penaltyBadge.classList.remove('penalty-bump');
+                void penaltyBadge.offsetWidth;
+                penaltyBadge.classList.add('penalty-bump');
+              }
+
+              feedbackEl.className = 'feedback-banner penalty-notice';
+              feedbackEl.textContent = '⚔ 3 attempts exhausted — Penalty applied (+1). 3 attempts restored.';
+              announceSR('3 attempts exhausted. One penalty applied. Three attempts restored.');
+
               this.state.attemptsUsed = 0;
               this.renderAll();
               saveState();
+
+              // Trigger full-page center popup modal for 3rd attempt / penalty
+              this.showAttemptModal({
+                type: 'penalty-cycle',
+                stageNum
+              });
+
+              if (CONFIG.cooldownSeconds > 0) {
+                this.applyCooldown(stageNum);
+              }
             }
           }
         }
       }
 
-      showAttemptModal(attemptsUsed, maxAttempts, isPenaltyIncurred, stageNum) {
-        this.currentActiveStage = stageNum;
-        if (isPenaltyIncurred) {
-          if (this.modalTag) this.modalTag.textContent = "॥ दण्डसंकेतः ॥ PENALTY APPLIED";
+      showAttemptModal(opts) {
+        this.currentActiveStage = opts.stageNum || 1;
+        const threshold = CONFIG.directPenaltyThreshold || 4;
+
+        if (opts.type === 'direct-penalty') {
+          // After 4 penalties: each guess adds +1 penalty directly
+          if (this.modalTag) this.modalTag.textContent = "॥ तीव्र दण्डसंकेतः ॥ DIRECT PENALTY ADDED";
+          if (this.modalIcon) {
+            this.modalIcon.textContent = "⚔";
+            this.modalIcon.className = "modal-icon-badge penalty-alert";
+          }
+          if (this.modalTitle) {
+            this.modalTitle.textContent = "Incorrect Answer — 1 Penalty Added";
+          }
+          if (this.modalDesc) {
+            this.modalDesc.innerHTML = `<span style="color: #ff8b8b; font-weight: 700; font-size: 1.08em; display: block; margin-bottom: 8px;">1 penalty has been added for this guess!</span><span style="color: var(--heading-ivory);">You have reached ${threshold}+ penalties. For every incorrect guess, 1 penalty is now added directly.</span>`;
+          }
+          const dismissText = document.getElementById('modal-dismiss-text');
+          if (dismissText) dismissText.textContent = "Try Again";
+
+          for (let i = 0; i < 3; i++) {
+            if (this.modalPips[i]) this.modalPips[i].className = "modal-pip-item direct-penalty-pip";
+          }
+        } else if (opts.type === 'penalty-cycle') {
+          // 3rd attempt exhausted in regular mode
+          const reachedThreshold = this.state.penaltyCount >= threshold;
+          if (this.modalTag) {
+            this.modalTag.textContent = reachedThreshold ? "॥ दण्डसंकेतः ॥ 4 PENALTIES REACHED" : "॥ दण्डसंकेतः ॥ PENALTY APPLIED";
+          }
           if (this.modalIcon) {
             this.modalIcon.textContent = "⚔";
             this.modalIcon.className = "modal-icon-badge penalty-alert";
@@ -2638,7 +2734,11 @@
             this.modalTitle.textContent = "You have used 3 attempts out of 3";
           }
           if (this.modalDesc) {
-            this.modalDesc.innerHTML = `<span style="color: #ff9494; font-weight: 700; font-size: 1.05em; display: block; margin-bottom: 8px;">1 penalty has been added to your score.</span><span style="color: var(--heading-ivory);">Your 3 attempts have been restored.</span>`;
+            if (reachedThreshold) {
+              this.modalDesc.innerHTML = `<span style="color: #ff8b8b; font-weight: 700; font-size: 1.08em; display: block; margin-bottom: 8px;">1 penalty added (Total: ${this.state.penaltyCount}).</span><span style="color: #ffd875; font-weight: 600;">⚠ 4-Penalty threshold reached! From now on, each incorrect guess will add 1 penalty directly.</span>`;
+            } else {
+              this.modalDesc.innerHTML = `<span style="color: #ff9494; font-weight: 700; font-size: 1.08em; display: block; margin-bottom: 8px;">1 penalty has been added to your score.</span><span style="color: var(--heading-ivory);">Your 3 attempts have been restored.</span>`;
+            }
           }
           const dismissText = document.getElementById('modal-dismiss-text');
           if (dismissText) dismissText.textContent = "Accept & Continue";
@@ -2647,13 +2747,16 @@
             if (this.modalPips[i]) this.modalPips[i].className = "modal-pip-item used";
           }
         } else {
+          // opts.type === 'attempt-consumed'
+          const used = opts.attemptsUsed;
+          const max = opts.maxAttempts || 3;
           if (this.modalTag) this.modalTag.textContent = "॥ कालसंकेतः ॥ ATTEMPT CONSUMED";
           if (this.modalIcon) {
             this.modalIcon.textContent = "⚠";
             this.modalIcon.className = "modal-icon-badge";
           }
           if (this.modalTitle) {
-            this.modalTitle.textContent = `You have used ${attemptsUsed} attempt${attemptsUsed > 1 ? "s" : ""} out of 3`;
+            this.modalTitle.textContent = `You have used ${used} attempt${used > 1 ? "s" : ""} out of ${max}`;
           }
           if (this.modalDesc) {
             this.modalDesc.innerHTML = `Upon 3 attempts, 1 penalty will be added.`;
@@ -2663,7 +2766,7 @@
 
           for (let i = 0; i < 3; i++) {
             if (this.modalPips[i]) {
-              this.modalPips[i].className = (i < (maxAttempts - attemptsUsed)) ? "modal-pip-item available" : "modal-pip-item used";
+              this.modalPips[i].className = (i < (max - used)) ? "modal-pip-item available" : "modal-pip-item used";
             }
           }
         }
