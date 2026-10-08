@@ -1738,7 +1738,7 @@ ANS : धर्मो रक्षति रक्षितः`
         }
       ],
       maxAttempts: 3,
-      directPenaltyThreshold: 4, // After 4 penalties, each guess adds 1 penalty directly
+      directPenaltyThreshold: 1, // After 1st penalty, each incorrect guess adds 1 penalty directly
       cooldownSeconds: 0, // Set > 0 for lock cooldown in seconds between 3-attempt resets
       clueRevealStyle: "seal", // "seal" | "scratch"
       audio: {
@@ -2549,7 +2549,7 @@ ANS : धर्मो रक्षति रक्षितः`
       }
 
       renderAttemptsUI() {
-        const threshold = CONFIG.directPenaltyThreshold || 4;
+        const threshold = CONFIG.directPenaltyThreshold !== undefined ? CONFIG.directPenaltyThreshold : 1;
         const isDirectPenalty = this.state.penaltyCount >= threshold;
 
         if (isDirectPenalty) {
@@ -2631,10 +2631,10 @@ ANS : धर्मो रक्षति रक्षितः`
           void cardEl.offsetWidth; // Trigger reflow
           cardEl.classList.add('card-shake');
 
-          const threshold = CONFIG.directPenaltyThreshold || 4;
+          const threshold = CONFIG.directPenaltyThreshold !== undefined ? CONFIG.directPenaltyThreshold : 1;
 
           if (this.state.penaltyCount >= threshold) {
-            // DIRECT PENALTY MODE (penaltyCount >= 4: each guess adds +1 penalty directly)
+            // DIRECT PENALTY MODE (after 1st penalty: each guess adds +1 penalty directly)
             this.state.penaltyCount += 1;
             sound.playPenalty();
 
@@ -2716,10 +2716,10 @@ ANS : धर्मो रक्षति रक्षितः`
 
       showAttemptModal(opts) {
         this.currentActiveStage = opts.stageNum || 1;
-        const threshold = CONFIG.directPenaltyThreshold || 4;
+        const threshold = CONFIG.directPenaltyThreshold !== undefined ? CONFIG.directPenaltyThreshold : 1;
 
         if (opts.type === 'direct-penalty') {
-          // After 4 penalties: each guess adds +1 penalty directly
+          // After 1st penalty: each guess adds +1 penalty directly
           if (this.modalTag) this.modalTag.textContent = "॥ तीव्र दण्डसंकेतः ॥ DIRECT PENALTY ADDED";
           if (this.modalIcon) {
             this.modalIcon.textContent = "⚔";
@@ -2729,7 +2729,7 @@ ANS : धर्मो रक्षति रक्षितः`
             this.modalTitle.textContent = "Incorrect Answer — 1 Penalty Added";
           }
           if (this.modalDesc) {
-            this.modalDesc.innerHTML = `<span style="color: #ff8b8b; font-weight: 700; font-size: 1.08em; display: block; margin-bottom: 8px;">1 penalty has been added for this guess!</span><span style="color: var(--heading-ivory);">You have reached ${threshold}+ penalties. For every incorrect guess, 1 penalty is now added directly.</span>`;
+            this.modalDesc.innerHTML = `<span style="color: #ff8b8b; font-weight: 700; font-size: 1.08em; display: block; margin-bottom: 8px;">1 penalty added for this guess! (Total: ${this.state.penaltyCount})</span><span style="color: var(--heading-ivory);">First penalty has already been incurred. For every incorrect guess, penalties will keep adding up (+1 directly).</span>`;
           }
           const dismissText = document.getElementById('modal-dismiss-text');
           if (dismissText) dismissText.textContent = "Try Again";
@@ -2741,7 +2741,7 @@ ANS : धर्मो रक्षति रक्षितः`
           // 3rd attempt exhausted in regular mode
           const reachedThreshold = this.state.penaltyCount >= threshold;
           if (this.modalTag) {
-            this.modalTag.textContent = reachedThreshold ? "॥ दण्डसंकेतः ॥ 4 PENALTIES REACHED" : "॥ दण्डसंकेतः ॥ PENALTY APPLIED";
+            this.modalTag.textContent = reachedThreshold ? "॥ दण्डसंकेतः ॥ FIRST PENALTY INCURRED" : "॥ दण्डसंकेतः ॥ PENALTY APPLIED";
           }
           if (this.modalIcon) {
             this.modalIcon.textContent = "⚔";
@@ -2752,7 +2752,7 @@ ANS : धर्मो रक्षति रक्षितः`
           }
           if (this.modalDesc) {
             if (reachedThreshold) {
-              this.modalDesc.innerHTML = `<span style="color: #ff8b8b; font-weight: 700; font-size: 1.08em; display: block; margin-bottom: 8px;">1 penalty added (Total: ${this.state.penaltyCount}).</span><span style="color: #ffd875; font-weight: 600;">⚠ 4-Penalty threshold reached! From now on, each incorrect guess will add 1 penalty directly.</span>`;
+              this.modalDesc.innerHTML = `<span style="color: #ff8b8b; font-weight: 700; font-size: 1.08em; display: block; margin-bottom: 8px;">1 penalty added (Total: ${this.state.penaltyCount}).</span><span style="color: #ffd875; font-weight: 600;">⚠ First penalty incurred! From now on, penalties will keep adding up (+1 directly for each incorrect guess).</span>`;
             } else {
               this.modalDesc.innerHTML = `<span style="color: #ff9494; font-weight: 700; font-size: 1.08em; display: block; margin-bottom: 8px;">1 penalty has been added to your score.</span><span style="color: var(--heading-ivory);">Your 3 attempts have been restored.</span>`;
             }
