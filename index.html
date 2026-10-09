@@ -838,6 +838,12 @@
       user-select: none;
       -webkit-user-select: none;
       touch-action: none;
+      transition: border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .scratch-card-box.revealed {
+      border-color: #ffd875;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.9), 0 0 35px rgba(201, 164, 92, 0.6), inset 0 0 25px rgba(201, 164, 92, 0.25);
     }
 
     /* Hidden Word Underneath */
@@ -1505,7 +1511,7 @@
         <!-- Scratch Card Container (Reveals on Riddle 1 Success) -->
         <div id="scratch-stage-1" class="scratch-stage-container">
           <h2 class="scratch-instruction-title">॥ दिव्य प्रकटीकरणम् ॥ SACRED REVELATION</h2>
-          <p class="scratch-instruction-desc">Scratch the consecrated foil below to reveal the cosmic glyph.</p>
+          <p class="scratch-instruction-desc" id="scratch-1-instruction-desc">Scratch the consecrated foil below to reveal the cosmic glyph.</p>
 
           <div class="scratch-card-box" id="scratch-box">
             <!-- Hidden Word Underneath -->
@@ -1963,22 +1969,28 @@ and let the ancient wisdom speak for itself.`
           localStorage.removeItem(STORAGE_KEY);
         } catch (e) {}
         window.history.replaceState({}, document.title, window.location.pathname);
-        return { ...defaultState };
+        appState = { ...defaultState };
+        return appState;
       }
 
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
         if (raw) {
           const parsed = JSON.parse(raw);
-          return { ...defaultState, ...parsed };
+          appState = { ...defaultState, ...parsed };
+          return appState;
         }
       } catch (e) {
         console.warn("Storage unavailable, running in memory:", e);
       }
-      return { ...defaultState };
+      appState = { ...defaultState };
+      return appState;
     }
 
-    function saveState() {
+    function saveState(state) {
+      if (state) {
+        appState = { ...appState, ...state };
+      }
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
       } catch (e) {}
@@ -2519,7 +2531,7 @@ and let the ancient wisdom speak for itself.`
           stage2LockedBanner.style.display = "flex";
           stage2Container.classList.remove('visible');
 
-          if (this.state.stage1Solved && !this.state.stage1Scratched) {
+          if (this.state.stage1Solved) {
             this.showScratchCard1();
           }
         } else {
@@ -2533,7 +2545,9 @@ and let the ancient wisdom speak for itself.`
           document.getElementById('riddle-1-input').disabled = true;
           document.getElementById('riddle-1-submit').disabled = true;
           document.getElementById('riddle-1-submit').textContent = "Deciphered ✓";
-          document.getElementById('scratch-stage-1').style.display = "none";
+
+          // Scratch card remains visible in Chamber 1 — does not disappear
+          this.showScratchCard1();
 
           if (this.state.stage2Solved) {
             document.getElementById('riddle-2-status').textContent = "CIPHER SOLVED";
@@ -2842,12 +2856,29 @@ and let the ancient wisdom speak for itself.`
 
       /*
         ===========================================================================
-        SECTION 5: SCRATCH CARD & FLIGHT TO CORNER ANIMATION
+        SECTION 5: SCRATCH CARD REVELATION (CHAMBER I)
         ===========================================================================
       */
       showScratchCard1() {
         const container = document.getElementById('scratch-stage-1');
-        container.classList.add('visible');
+        if (container) {
+          container.classList.add('visible');
+          container.style.display = 'flex';
+        }
+
+        if (this.state.stage1Scratched) {
+          const canvas = document.getElementById('scratch-canvas');
+          if (canvas) canvas.style.display = 'none';
+          const fallbackBtn = document.getElementById('scratch-fallback-btn');
+          if (fallbackBtn) fallbackBtn.style.display = 'none';
+          const hiddenContent = document.getElementById('scratch-hidden-content');
+          if (hiddenContent) hiddenContent.style.opacity = '1';
+          const box = document.getElementById('scratch-box');
+          if (box) box.classList.add('revealed');
+          const desc = document.getElementById('scratch-1-instruction-desc');
+          if (desc) desc.textContent = "Cosmic glyph revealed: DHARMA — The Sacred Seed of Kalpa";
+          return;
+        }
 
         if (!this.scratchManager) {
           this.scratchManager = new ScratchCardManager('scratch-canvas', 'scratch-box', () => {
@@ -2874,77 +2905,25 @@ and let the ancient wisdom speak for itself.`
           });
         }
 
-        // ~1s pause, then fly to top-right slot
-        setTimeout(() => {
-          this.flyWordToSlot();
-        }, 1000);
-      }
+        // Scratch card remains right here in place — does not fly to corner
+        const box = document.getElementById('scratch-box');
+        if (box) box.classList.add('revealed');
 
-      flyWordToSlot() {
-        const sourceDevanagari = document.getElementById('reward-devanagari');
-        const targetSlot = document.getElementById('collected-words-slot');
+        const desc = document.getElementById('scratch-1-instruction-desc');
+        if (desc) desc.textContent = "Cosmic glyph revealed: DHARMA — The Sacred Seed of Kalpa";
 
-        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const fallbackBtn = document.getElementById('scratch-fallback-btn');
+        if (fallbackBtn) fallbackBtn.style.display = 'none';
 
-        if (reducedMotion) {
-          // Instant completion for reduced motion
-          this.completeWordCollection();
-          return;
-        }
-
-        const srcRect = sourceDevanagari.getBoundingClientRect();
-        const dstRect = targetSlot.getBoundingClientRect();
-
-        // Create flying clone
-        const clone = document.createElement('div');
-        clone.className = 'flying-word-clone';
-        clone.innerHTML = `
-          <div class="scratch-word-devanagari">धर्म</div>
-          <div class="scratch-word-roman">DHARMA</div>
-        `;
-        clone.style.left = `${srcRect.left + srcRect.width / 2}px`;
-        clone.style.top = `${srcRect.top + srcRect.height / 2}px`;
-        clone.style.transform = 'translate(-50%, -50%) scale(1)';
-        document.body.appendChild(clone);
-
-        const deltaX = (dstRect.left + dstRect.width / 2) - (srcRect.left + srcRect.width / 2);
-        const deltaY = (dstRect.top + dstRect.height / 2) - (srcRect.top + srcRect.height / 2);
-
-        // Fade original card slightly while flying
         const hiddenContent = document.getElementById('scratch-hidden-content');
         if (hiddenContent) {
-          hiddenContent.style.transition = 'opacity 0.4s ease';
-          hiddenContent.style.opacity = '0.2';
+          hiddenContent.style.opacity = '1';
         }
 
-        // WAAPI Flight animation
-        const anim = clone.animate([
-          {
-            transform: 'translate(-50%, -50%) scale(1)',
-            opacity: 1,
-            filter: 'drop-shadow(0 0 15px rgba(201, 164, 92, 0.8))'
-          },
-          {
-            transform: `translate(calc(-50% + ${deltaX * 0.45}px), calc(-50% + ${deltaY * 0.25 - 45}px)) scale(1.25)`,
-            opacity: 1,
-            offset: 0.4,
-            filter: 'drop-shadow(0 0 35px rgba(254, 232, 164, 1))'
-          },
-          {
-            transform: `translate(calc(-50% + ${deltaX}px), calc(-50% + ${deltaY}px)) scale(0.38)`,
-            opacity: 0.95,
-            filter: 'drop-shadow(0 0 10px rgba(201, 164, 92, 0.6))'
-          }
-        ], {
-          duration: 950,
-          easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
-          fill: 'forwards'
-        });
-
-        anim.onfinish = () => {
-          clone.remove();
+        // Brief celebration pause, then advance to Chamber II smoothly
+        setTimeout(() => {
           this.completeWordCollection();
-        };
+        }, 1200);
       }
 
       completeWordCollection() {
@@ -2956,9 +2935,11 @@ and let the ancient wisdom speak for itself.`
         sound.playArrival();
 
         const slot = document.getElementById('collected-words-slot');
-        slot.classList.add('has-word', 'arrival-pulse');
+        if (slot) {
+          slot.classList.add('has-word');
+        }
 
-        announceSR("Word DHARMA permanently collected into vault. Chamber II unlocked!");
+        announceSR("Word DHARMA revealed. Chamber II unlocked!");
 
         // Staged reveal of Stage 2
         setTimeout(() => {
