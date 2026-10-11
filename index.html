@@ -620,12 +620,11 @@
 
     .riddle-text {
       font-family: var(--font-body);
-      font-size: clamp(17px, 2.3vw, 22px);
+      font-size: clamp(20px, 2.8vw, 26px);
       font-style: italic;
       color: var(--heading-ivory);
-      line-height: 1.6;
+      line-height: 1.5;
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
-      white-space: pre-line;
     }
 
     .riddle-text::before {
@@ -1681,7 +1680,7 @@
         makeHash("your_answer_here").then(console.log);
 
       DEMO / ACCEPTED ANSWERS INCLUDED IN THIS BUILD:
-      - Riddle 1 accepts: "Karma", "karma", "Karm", "कर्म" (and "test" for quick testing)
+      - Riddle 1 accepts: "Vikarna", "vikarna", "Vikarn", "विकर्ण" (and "test" for quick testing)
       - Riddle 2 accepts: "Parashurama", "Parshurama", "Parashuram", "Parshuram", "Parasurama", "Parasuram", "परशुराम" (and "test")
       =============================================================================
     */
@@ -1691,28 +1690,12 @@
       riddles: [
         {
           id: 1,
-          text: `I follow every action,
-yet I have no hands.
-
-I leave no footprints,
-yet nothing escapes my path.
-
-I may reward the kind,
-or teach the cruel through suffering.
-
-Kings and beggars alike are bound by me.
-No crown can command me,
-and no weapon can defeat me.
-
-What am I?`,
-          // Hashes for: "karma", "karm", "कर्म", "the karma", "karam", "करम", "test"
+          text: "Who was the only Kaurava to openly oppose Draupadi's humiliation in the royal assembly?",
+          // Hashes for: "vikarna", "vikarn", "विकर्ण", "test"
           answerHashes: [
-            "6d4b9ee62028b80981988484e790bac1fdd5a9eb9f30022c6268397e5dd2b79f", // karma
-            "ad9e1188a99fc2c58df38ce287cf261a1c0614d4269539c70c28ff9d839ee7b0", // karm
-            "0fa54aa6019bfff77fec53c801f48f9e59f78ddde20476b3223be994a2ed67e2", // कर्म
-            "b8cfe3df6552098537f2cf5abdbd34d7dfd2efd09d00b498c9ec4bd5e98a8c69", // the karma
-            "82eee15d1d231d0ea45ee5dcd859fa2759337735d1e0606cf2f95c12c3f415c4", // karam
-            "b586ef046f4929822a2c627d0498bd2ae6b2d8070b6191ff92996e3a37566b76", // करम
+            "8947d97760f2b203ee98dd10c7883af1c36c5cbdfafc7830df0f058e415d758f", // vikarna
+            "1391857ef6ba1303ef75db02d9a874fe1a5d476f0f2a0cca62a5ed5df1368f0a", // vikarn
+            "a2b15daf81877ef6cde25f1c0eaee93c7697ddbc2db98c9b517cb23bc34c1147", // विकर्ण
             "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"  // test
           ],
           reward: {
